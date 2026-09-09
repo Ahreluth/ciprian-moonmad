@@ -47,14 +47,14 @@
     a { color: var(--accent); }
 
     .shell {
-      width: min(940px, calc(100% - 24px));
+      width: min(980px, calc(100% - 28px));
       margin: 0 auto;
-      padding: 18px 0 36px;
+      padding: 42px 0 56px;
     }
 
     .masthead {
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 22px;
     }
 
     .eyebrow {
@@ -70,7 +70,7 @@
       margin: 0;
       padding: 0;
       font-family: "Crimson Pro", Garamond, Georgia, serif;
-      font-size: clamp(2.35rem, 6vw, 4rem);
+      font-size: clamp(2.65rem, 6.5vw, 4.35rem);
       font-weight: 500;
       letter-spacing: .035em;
       text-transform: uppercase;
@@ -84,7 +84,7 @@
       max-width: 660px;
       margin: 2px auto 0;
       color: var(--muted);
-      font-size: .82rem;
+      font-size: .9rem;
     }
 
     .card {
@@ -101,11 +101,11 @@
     }
 
     .moon-pane {
-      height: 370px;
-      min-height: 370px;
+      height: 500px;
+      min-height: 500px;
       display: grid;
       place-items: center;
-      padding: 24px;
+      padding: 32px;
       border-right: 1px solid var(--line);
       background:
         radial-gradient(circle at center, rgba(183, 129, 121, .10), transparent 13rem),
@@ -138,6 +138,19 @@
 
     .phase-full { background: #ffffff; border-color: #ffffff; }
     .phase-full::after { display: none; }
+
+    .moon-icon.phase-full.blood-moon {
+      background: #A04646;
+      border-color: #c94955;
+      box-shadow:
+        0 0 0 1px rgba(201,73,85,.18),
+        0 0 30px rgba(201,73,85,.28);
+    }
+
+    .day-moon.phase-full.blood-moon {
+      box-shadow: 0 0 8px rgba(201,73,85,.42);
+    }
+
 
     .phase-new {
       background: transparent;
@@ -200,12 +213,12 @@
     }
 
     .content-pane {
-      height: 370px;
-      min-height: 370px;
-      padding: 22px 28px;
+      height: 500px;
+      min-height: 500px;
+      padding: clamp(26px, 5vw, 44px);
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: center;
       overflow: hidden;
     }
 
@@ -218,7 +231,7 @@
     }
 
     .date-title {
-      margin: 0 0 13px;
+      margin: 0 0 20px;
       font-family: "Crimson Pro", Garamond, Georgia, serif;
       font-size: clamp(1.45rem, 4vw, 2rem);
       font-weight: 500;
@@ -234,9 +247,9 @@
     }
 
     .trait {
-      margin: 3px 0 5px;
+      margin: 5px 0 8px;
       font-family: "Crimson Pro", Garamond, Georgia, serif;
-      font-size: clamp(1.9rem, 5vw, 3.1rem);
+      font-size: clamp(2.05rem, 5.4vw, 3.35rem);
       line-height: 1.04;
       font-weight: 500;
     }
@@ -250,14 +263,14 @@
 
 
     .special-slot {
-      height: 126px;
-      min-height: 126px;
-      margin-top: 10px;
+      height: 148px;
+      min-height: 148px;
+      margin-top: 18px;
     }
 
     .special {
       height: 100%;
-      padding: 9px 12px;
+      padding: 13px 16px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -287,7 +300,7 @@
 
     .special.danger strong { color: #BD3F3F; }
     .special.recovery strong { color: #578c63; }
-    .special p { margin: 0; color: #BAABAB; font-size: .82rem; line-height: 1.35; }
+    .special p { margin: 0; color: #BAABAB; font-size: .9rem; line-height: 1.42; }
 
     .sun-times {
       display: grid;
@@ -334,22 +347,22 @@
     }
 
     .calendar-card {
-      margin-top: 12px;
-      padding: 12px 16px 13px;
+      margin-top: 20px;
+      padding: clamp(18px, 4vw, 30px);
     }
 
     .calendar-head {
       display: grid;
-      grid-template-columns: 36px 1fr 36px;
+      grid-template-columns: 44px 1fr 44px;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 7px;
+      gap: 10px;
+      margin-bottom: 18px;
     }
 
     .calendar-title {
       text-align: center;
       font-family: "Crimson Pro", Garamond, Georgia, serif;
-      font-size: clamp(1.12rem, 3vw, 1.42rem);
+      font-size: clamp(1.22rem, 3.5vw, 1.55rem);
     }
 
     .icon-button,
@@ -362,8 +375,8 @@
     }
 
     .icon-button {
-      width: 36px;
-      height: 32px;
+      width: 44px;
+      height: 40px;
       border-radius: 4px;
       font-size: 1.15rem;
     }
@@ -384,21 +397,21 @@
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 3px;
+      gap: 6px;
     }
 
     .weekday {
-      padding: 1px 0 4px;
+      padding: 3px 0 8px;
       text-align: center;
       color: var(--muted);
-      font-size: .66rem;
+      font-size: .71rem;
       font-weight: 700;
       text-transform: uppercase;
     }
 
     .day {
-      min-height: 45px;
-      padding: 3px 3px 3px;
+      min-height: 76px;
+      padding: 7px 5px 6px;
       border: 1px solid transparent;
       border-radius: 4px;
       background: transparent;
@@ -421,31 +434,43 @@
     .day.full-day .day-number { color: #FFEEEE; }
 
     .day-number {
-      font-size: .71rem;
+      font-size: .8rem;
       font-weight: 700;
     }
 
     .day-moon {
-      --moon-size: 1.02rem;
+      --moon-size: 1.45rem;
       box-shadow: none;
       border-width: 1px;
     }
 
     .day-mark {
-      width: 4px;
-      height: 4px;
+      width: 6px;
+      height: 6px;
+      margin-top: 4px;
       border-radius: 50%;
       background: transparent;
+      flex: 0 0 auto;
     }
 
     .day.influence-day .day-mark {
       background: var(--accent);
-      box-shadow: 0 0 6px rgba(183,129,121,.45);
+      box-shadow: 0 0 6px rgba(183,129,121,.5);
+    }
+
+    .day.pre-full .day-mark {
+      background: #ffc107;
+      box-shadow: 0 0 7px rgba(255,193,7,.62);
     }
 
     .day.full-day .day-mark {
-      background: var(--danger);
-      box-shadow: 0 0 8px rgba(189,63,63,.62);
+      background: #c94955;
+      box-shadow: 0 0 9px rgba(201,73,85,.75);
+    }
+
+    .day.post-full .day-mark {
+      background: #578c63;
+      box-shadow: 0 0 7px rgba(87,140,99,.65);
     }
 
     .phase-inline {
@@ -544,16 +569,15 @@
     }
 
     @media (max-width: 720px) {
-      .shell { width: min(100% - 14px, 940px); padding-top: 14px; }
+      .shell { width: min(100% - 18px, 980px); padding-top: 24px; }
       .hero { grid-template-columns: 1fr; }
-      .moon-pane { height: 205px; min-height: 205px; padding: 18px 20px 14px; border-right: 0; border-bottom: 1px solid var(--line); }
-      .moon-glyph { --moon-size: 7.2rem; }
-      .phase-name { margin-top: 10px; }
-      .content-pane { height: 365px; min-height: 365px; padding: 20px 20px 22px; }
-      .date-title { margin-bottom: 12px; }
-      .special-slot { height: 132px; min-height: 132px; }
-      .day { min-height: 43px; border-radius: 4px; }
-      .day-moon { --moon-size: .98rem; }
+      .moon-pane { height: 235px; min-height: 235px; padding: 27px 20px 22px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .moon-glyph { --moon-size: 8.5rem; }
+      .content-pane { height: 500px; min-height: 500px; padding: 25px 22px 28px; }
+      .date-title { margin-bottom: 21px; }
+      .special-slot { height: 148px; min-height: 148px; }
+      .day { min-height: 65px; border-radius: 4px; }
+      .day-moon { --moon-size: 1.32rem; }
       .phase-list { grid-template-columns: 1fr; }
     }
 
@@ -571,6 +595,14 @@
       .eyebrow { font-size: .9rem; }
       .subtitle { font-size: .76rem; }
     }
+  
+    .day.selected:not(.pre-full):not(.full-day):not(.post-full) .day-mark,
+    .day.today:not(.pre-full):not(.full-day):not(.post-full) .day-mark,
+    .day:hover:not(.pre-full):not(.full-day):not(.post-full) .day-mark {
+      background: #FFEEEE;
+      box-shadow: 0 0 6px rgba(255, 238, 238, .7);
+    }
+
   </style>
 </head>
 <body>
@@ -746,6 +778,10 @@
       '2026-08-28': 'Blood Moon - Embrace your Shadow Side',
       '2026-12-23': 'Super Moon - Danger, Will Robinson!'
     };
+
+    const bloodMoonDates = new Set([
+      '2026-08-28'
+    ]);
 
     const els = {
       moonGlyph: document.getElementById('moonGlyph'),
@@ -924,7 +960,7 @@
       const visual = getVisualPhase(selectedDate);
       const influence = activeInfluence(selectedDate);
 
-      els.moonGlyph.className = `moon-glyph moon-icon phase-${visual.key}`;
+      els.moonGlyph.className = `moon-glyph moon-icon phase-${visual.key}${bloodMoonDates.has(selectedDate) ? ' blood-moon' : ''}`;
       els.phaseName.textContent = visual.name;
       els.dateLabel.textContent = selectedDate === vermontToday ? 'Today in Vermont' : 'Selected RP Date';
       els.dateTitle.textContent = friendlyDate(selectedDate);
@@ -947,7 +983,7 @@
       } else if (relation?.type === 'full') {
         const note = gameNotes[selectedDate] ? `<br><em>${gameNotes[selectedDate]}</em>` : '';
         const sun = fullMoonSunTimes(selectedDate);
-        html = `<div class="special danger"><strong>Full Moon Day</strong><p>Hybrid form begins at sundown and lasts until sunrise the following day. Instinct, rage, and the hunt take over.${note}</p><div class="sun-times"><div class="sun-time"><span>Burlington sunset</span><b>${sun.sunset}</b></div><div class="sun-time"><span>Next sunrise</span><b>${sun.nextSunrise}</b></div></div></div>`;
+        html = `<div class="special danger"><strong>Full Moon Day</strong><p>Hybrid form begins at sundown and lasts until sunrise the following day. Instinct, rage, and the hunt take over.${note}</p><div class="sun-times"><div class="sun-time"><span>Ciprian sunset</span><b>${sun.sunset}</b></div><div class="sun-time"><span>Ciprian sunrise</span><b>${sun.nextSunrise}</b></div></div></div>`;
       } else if (relation?.type === 'after') {
         html = `<div class="special recovery"><strong>Recovery Day</strong><p>A full day of recovery follows the previous night's rage and confusion. The Full Moon's irritability and anger influence is still active today.</p></div>`;
       }
@@ -977,11 +1013,17 @@
         if (iso === selectedDate) btn.classList.add('selected');
         if (iso === vermontToday) btn.classList.add('today');
         if (activeInfluence(iso)) btn.classList.add('influence-day');
-        if (exactEvent(iso)?.type === 'full') btn.classList.add('full-day');
+
+        const fullRelation = fullMoonRelation(iso);
+        if (fullRelation?.type === 'before') btn.classList.add('pre-full');
+        if (fullRelation?.type === 'full') btn.classList.add('full-day');
+        if (fullRelation?.type === 'after') btn.classList.add('post-full');
+
         const influence = activeInfluence(iso);
         const influenceLabel = influence ? `, ${phaseMeta[influence.type].principal} influence active` : ', no active Moonmad influence';
         btn.setAttribute('aria-label', `${friendlyDate(iso)}, ${visual.name}${influenceLabel}`);
-        btn.innerHTML = `<span class="day-number">${day}</span><span class="day-moon moon-icon phase-${visual.key}" aria-hidden="true"></span><span class="day-mark" aria-hidden="true"></span>`;
+        const bloodClass = bloodMoonDates.has(iso) ? ' blood-moon' : '';
+        btn.innerHTML = `<span class="day-number">${day}</span><span class="day-moon moon-icon phase-${visual.key}${bloodClass}" aria-hidden="true"></span><span class="day-mark" aria-hidden="true"></span>`;
         btn.addEventListener('click', () => selectDate(iso, true));
         els.calendarGrid.appendChild(btn);
       }
