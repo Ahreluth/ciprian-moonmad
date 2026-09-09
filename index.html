@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="A lightweight RP reference for Ciprian Moonmad characters, showing Vermont moon phases and the corresponding Curse influence.">
+  <title>Moonmad | Ciprian Moon Phase Calendar</title>
+  <style>
+    :root {
+      --bg: #080b14;
+      --panel: #111726;
+      --panel-2: #171e30;
+      --ink: #edf0f7;
+      --muted: #a9b0c2;
+      --line: #2a334b;
+      --silver: #d8deee;
+      --accent: #b9c7ef;
+      --accent-soft: rgba(185, 199, 239, .12);
+      --warning: #e6b56d;
+      --danger: #d77d75;
+      --good: #8fb5a2;
+      --shadow: 0 18px 45px rgba(0,0,0,.28);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { color-scheme: dark; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 50% -15%, rgba(107, 123, 176, .24), transparent 34rem),
+        linear-gradient(180deg, #0a0f1e 0%, var(--bg) 62%, #070910 100%);
+      line-height: 1.5;
+    }
+
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    a { color: var(--accent); }
+
+    .shell {
+      width: min(980px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 42px 0 56px;
+    }
+
+    .masthead {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font-size: .75rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.5rem, 8vw, 4.9rem);
+      font-weight: 500;
+      letter-spacing: -.035em;
+    }
+
+    .subtitle {
+      max-width: 660px;
+      margin: 10px auto 0;
+      color: var(--muted);
+      font-size: .97rem;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(21, 28, 46, .96), rgba(14, 19, 32, .96));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(240px, .82fr) minmax(0, 1.18fr);
+      overflow: hidden;
+    }
+
+    .moon-pane {
+      min-height: 390px;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+      border-right: 1px solid var(--line);
+      background:
+        radial-gradient(circle at center, rgba(213, 221, 244, .075), transparent 13rem),
+        linear-gradient(145deg, rgba(255,255,255,.018), transparent);
+    }
+
+    .moon-wrap { text-align: center; }
+
+    .moon-glyph {
+      font-family: "Segoe UI Symbol", "Apple Symbols", sans-serif;
+      font-size: clamp(8rem, 25vw, 12rem);
+      line-height: .95;
+      filter: drop-shadow(0 0 28px rgba(220, 228, 251, .12));
+      user-select: none;
+    }
+
+    .phase-name {
+      margin-top: 20px;
+      color: var(--silver);
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .content-pane {
+      padding: clamp(26px, 5vw, 44px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .date-label {
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .date-title {
+      margin: 0 0 28px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.45rem, 4vw, 2rem);
+      font-weight: 500;
+    }
+
+    .influence-kicker {
+      margin: 0;
+      color: var(--accent);
+      font-size: .74rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .trait {
+      margin: 5px 0 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 6vw, 3.55rem);
+      line-height: 1.04;
+      font-weight: 500;
+    }
+
+    .trait-copy {
+      margin: 0;
+      max-width: 560px;
+      color: #c8cddd;
+      font-size: 1rem;
+    }
+
+    .luck {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      align-self: flex-start;
+      margin-top: 20px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--silver);
+      background: rgba(255,255,255,.025);
+      font-size: .84rem;
+    }
+
+    .luck-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(185,199,239,.65);
+    }
+
+    .special {
+      margin-top: 22px;
+      padding: 16px 17px;
+      border: 1px solid rgba(230, 181, 109, .34);
+      border-radius: 15px;
+      background: rgba(230, 181, 109, .075);
+    }
+
+    .special.danger {
+      border-color: rgba(215, 125, 117, .42);
+      background: rgba(215, 125, 117, .085);
+    }
+
+    .special.recovery {
+      border-color: rgba(143, 181, 162, .34);
+      background: rgba(143, 181, 162, .07);
+    }
+
+    .special strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #f1d6ad;
+      font-size: .8rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .special.danger strong { color: #f1aaa4; }
+    .special.recovery strong { color: #b6d5c5; }
+    .special p { margin: 0; color: #d2d6e1; }
+
+    .calendar-card {
+      margin-top: 20px;
+      padding: clamp(18px, 4vw, 30px);
+    }
+
+    .calendar-head {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .calendar-title {
+      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.25rem, 4vw, 1.65rem);
+    }
+
+    .icon-button,
+    .today-button {
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: rgba(255,255,255,.025);
+      cursor: pointer;
+      transition: background .16s ease, border-color .16s ease, transform .16s ease;
+    }
+
+    .icon-button {
+      width: 44px;
+      height: 40px;
+      border-radius: 12px;
+      font-size: 1.15rem;
+    }
+
+    .icon-button:hover:not(:disabled),
+    .today-button:hover {
+      background: var(--accent-soft);
+      border-color: #4a587e;
+    }
+
+    .icon-button:active:not(:disabled),
+    .today-button:active { transform: translateY(1px); }
+
+    .icon-button:disabled { opacity: .25; cursor: default; }
+
+    .weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .weekday {
+      padding: 3px 0 8px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .71rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .day {
+      min-height: 76px;
+      padding: 7px 5px 6px;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      font: inherit;
+      transition: background .15s ease, border-color .15s ease;
+    }
+
+    .day:hover { background: rgba(255,255,255,.035); }
+    .day.selected {
+      border-color: #6978a6;
+      background: rgba(185, 199, 239, .11);
+    }
+    .day.today:not(.selected) { border-color: rgba(185, 199, 239, .23); }
+    .day.full-day .day-number { color: #f0c8c4; }
+
+    .day-number {
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    .day-moon {
+      font-family: "Segoe UI Symbol", "Apple Symbols", sans-serif;
+      font-size: 1.55rem;
+      line-height: 1;
+    }
+
+    .day-mark {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .day.full-day .day-mark {
+      background: var(--danger);
+      box-shadow: 0 0 8px rgba(215,125,117,.7);
+    }
+
+    .calendar-actions {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .today-button {
+      padding: 9px 14px;
+      border-radius: 999px;
+      font: inherit;
+      font-size: .84rem;
+    }
+
+    .calendar-note {
+      margin: 14px auto 0;
+      max-width: 680px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .reference {
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    details + details { border-top: 1px solid var(--line); }
+
+    summary {
+      padding: 18px 22px;
+      list-style: none;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--silver);
+    }
+
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; float: right; color: var(--muted); font-size: 1.1rem; }
+    details[open] summary::after { content: "−"; }
+
+    .details-body {
+      padding: 0 22px 22px;
+      color: #c5cad8;
+      font-size: .93rem;
+    }
+
+    .phase-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .phase-item {
+      padding: 12px 13px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: rgba(255,255,255,.018);
+    }
+
+    .phase-item strong { display: block; color: var(--ink); margin-bottom: 2px; }
+
+    .rules-list { margin: 10px 0 0 1.15rem; padding: 0; }
+    .rules-list li + li { margin-top: 6px; }
+
+    footer {
+      margin-top: 22px;
+      text-align: center;
+      color: #7f879b;
+      font-size: .74rem;
+    }
+
+    .unsupported {
+      margin: 18px 0 0;
+      padding: 14px 16px;
+      border: 1px solid rgba(230,181,109,.3);
+      border-radius: 13px;
+      color: #d8c4a6;
+      background: rgba(230,181,109,.055);
+      font-size: .85rem;
+    }
+
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 18px, 980px); padding-top: 24px; }
+      .hero { grid-template-columns: 1fr; }
+      .moon-pane { min-height: auto; padding: 27px 20px 22px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .moon-glyph { font-size: 8.5rem; }
+      .content-pane { padding: 25px 22px 28px; }
+      .date-title { margin-bottom: 21px; }
+      .day { min-height: 65px; border-radius: 10px; }
+      .day-moon { font-size: 1.32rem; }
+      .phase-list { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 430px) {
+      .calendar-card { padding: 16px 10px 19px; }
+      .weekdays, .calendar-grid { gap: 2px; }
+      .day { min-height: 58px; padding: 5px 2px; }
+      .day-number { font-size: .73rem; }
+      .day-moon { font-size: 1.18rem; }
+      .masthead { padding: 0 10px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <p class="eyebrow">Ciprian RP Reference</p>
+      <h1>Moonmad</h1>
+      <p class="subtitle">Vermont moon phases and the Curse influence they place on Moonmad characters.</p>
+    </header>
+
+    <section class="card hero" aria-live="polite">
+      <div class="moon-pane">
+        <div class="moon-wrap">
+          <div id="moonGlyph" class="moon-glyph" aria-hidden="true">🌘</div>
+          <div id="phaseName" class="phase-name">Waning Crescent</div>
+        </div>
+      </div>
+
+      <div class="content-pane">
+        <p id="dateLabel" class="date-label">Today in Vermont</p>
+        <h2 id="dateTitle" class="date-title">September 8, 2026</h2>
+
+        <p id="influenceKicker" class="influence-kicker">New Moon Influence</p>
+        <div id="trait" class="trait">Lethargic &amp; Withdrawn</div>
+        <p id="traitCopy" class="trait-copy">The pull of the new moon makes Moonmad lethargic and prone to withdrawing.</p>
+
+        <div class="luck"><span class="luck-dot"></span> Spend 1 Luck to resist the moon's urges.</div>
+        <div id="specialNotice"></div>
+      </div>
+    </section>
+
+    <section class="card calendar-card" aria-label="Moon phase calendar">
+      <div class="calendar-head">
+        <button id="prevMonth" class="icon-button" type="button" aria-label="Previous month">‹</button>
+        <div id="calendarTitle" class="calendar-title">September 2026</div>
+        <button id="nextMonth" class="icon-button" type="button" aria-label="Next month">›</button>
+      </div>
+
+      <div class="weekdays" aria-hidden="true">
+        <div class="weekday">Sun</div><div class="weekday">Mon</div><div class="weekday">Tue</div>
+        <div class="weekday">Wed</div><div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
+      </div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+
+      <div class="calendar-actions">
+        <button id="todayButton" class="today-button" type="button">Today in Vermont</button>
+        <button id="copyLinkButton" class="today-button" type="button">Copy link to this date</button>
+      </div>
+      <p class="calendar-note">2026 principal moon phases are based on Timeanddate's Burlington, Vermont calendar. Moonmad influence uses the nearest principal phase, because the game rules say "the days surrounding" each phase without defining a numerical cutoff.</p>
+      <div id="unsupportedNotice"></div>
+    </section>
+
+    <section class="card reference">
+      <details>
+        <summary>Moonmad influence cheat sheet</summary>
+        <div class="details-body">
+          <p>Moonmad are bound to the moon and prone to mood swings. The closest principal phase determines the influence shown above.</p>
+          <div class="phase-list">
+            <div class="phase-item"><strong>🌑 New Moon</strong>Lethargic and prone to withdrawing.</div>
+            <div class="phase-item"><strong>🌓 Waxing Half</strong>Mercurial and prone to playing tricks.</div>
+            <div class="phase-item"><strong>🌕 Full Moon</strong>Irritable and prone to fits of anger.</div>
+            <div class="phase-item"><strong>🌗 Waning Half</strong>Mysterious and prone to keeping secrets.</div>
+          </div>
+          <p><strong>Resistance:</strong> Spend 1 Luck to resist the moon's urges.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Full moon and Hybrid Form</summary>
+        <div class="details-body">
+          <p><strong>Day before:</strong> irritability and heightened anger responses build throughout the day.</p>
+          <p><strong>Full moon:</strong> transformation into Hybrid Form begins at sundown and lasts until sunrise the following day. In that form, a Moonmad is driven more by instinct and rage than rational thought, with a need to hunt.</p>
+          <p><strong>Day after:</strong> a full day of recovery from the previous night's rage and confusion.</p>
+          <ul class="rules-list">
+            <li>Slightly larger and bulkier than the usual human form.</li>
+            <li>Animal features resemble the Moonmad's primary animal form.</li>
+            <li>Natural Weapons apply.</li>
+            <li>+1 to rolls using Brawn, stacking with other bonuses.</li>
+            <li>-3 to rolls using Wits.</li>
+            <li>No ranged weapons, only melee weapons.</li>
+            <li>NPCs run, scream, and raise a ruckus.</li>
+            <li>Strong restraints such as chains or cages can contain the character for the duration.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>About the calendar</summary>
+        <div class="details-body">
+          <p>This version contains authoritative principal phase dates for <strong>2026</strong>, matching the game's stated Timeanddate reference for New England. Intermediate labels such as Waxing Crescent and Waning Gibbous are inferred from the principal phases.</p>
+          <p>The site uses the <strong>America/New_York</strong> timezone to decide what "today" means, so players outside Vermont still see the correct in-game local date.</p>
+          <p><a href="https://www.timeanddate.com/moon/phases/usa/burlington-vt" target="_blank" rel="noopener noreferrer">Open the Burlington, Vermont moon phase calendar on Timeanddate</a>.</p>
+        </div>
+      </details>
+    </section>
+
+    <footer>Unofficial Ciprian RP helper. No accounts, cookies, analytics, database, or external scripts.</footer>
+  </main>
+
+  <script>
+    const SUPPORTED_YEAR = 2026;
+
+    // Principal phase dates for Burlington, Vermont, from Timeanddate's 2026 calendar.
+    // December 27, 2025 is included only so January 1-2 can be classified correctly.
+    const phaseEvents = [
+      ['2025-12-27', 'first'],
+      ['2026-01-03', 'full'], ['2026-01-10', 'third'], ['2026-01-18', 'new'], ['2026-01-25', 'first'],
+      ['2026-02-01', 'full'], ['2026-02-09', 'third'], ['2026-02-17', 'new'], ['2026-02-24', 'first'],
+      ['2026-03-03', 'full'], ['2026-03-11', 'third'], ['2026-03-18', 'new'], ['2026-03-25', 'first'],
+      ['2026-04-01', 'full'], ['2026-04-10', 'third'], ['2026-04-17', 'new'], ['2026-04-23', 'first'],
+      ['2026-05-01', 'full'], ['2026-05-09', 'third'], ['2026-05-16', 'new'], ['2026-05-23', 'first'], ['2026-05-31', 'full'],
+      ['2026-06-08', 'third'], ['2026-06-14', 'new'], ['2026-06-21', 'first'], ['2026-06-29', 'full'],
+      ['2026-07-07', 'third'], ['2026-07-14', 'new'], ['2026-07-21', 'first'], ['2026-07-29', 'full'],
+      ['2026-08-05', 'third'], ['2026-08-12', 'new'], ['2026-08-19', 'first'], ['2026-08-28', 'full'],
+      ['2026-09-04', 'third'], ['2026-09-10', 'new'], ['2026-09-18', 'first'], ['2026-09-26', 'full'],
+      ['2026-10-03', 'third'], ['2026-10-10', 'new'], ['2026-10-18', 'first'], ['2026-10-26', 'full'],
+      ['2026-11-01', 'third'], ['2026-11-09', 'new'], ['2026-11-17', 'first'], ['2026-11-24', 'full'],
+      ['2026-12-01', 'third'], ['2026-12-08', 'new'], ['2026-12-17', 'first'], ['2026-12-23', 'full'], ['2026-12-30', 'third']
+    ].map(([date, type]) => ({ date, type, day: dayNumber(date) }));
+
+    const phaseMeta = {
+      new:   { principal: 'New Moon',      trait: 'Lethargic & Withdrawn', copy: 'The pull of the new moon makes Moonmad lethargic and prone to withdrawing.' },
+      first: { principal: 'Waxing Half',   trait: 'Mercurial & Trickster', copy: 'The waxing half moon makes Moonmad mercurial and prone to playing tricks.' },
+      full:  { principal: 'Full Moon',     trait: 'Irritable & Angry', copy: 'The full moon makes Moonmad irritable and prone to fits of anger.' },
+      third: { principal: 'Waning Half',   trait: 'Mysterious & Secretive', copy: 'The waning half moon makes Moonmad mysterious and prone to keeping secrets.' }
+    };
+
+    const visualPhase = {
+      new:              { name: 'New Moon',        glyph: '🌑' },
+      waxingCrescent:   { name: 'Waxing Crescent', glyph: '🌒' },
+      first:            { name: 'First Quarter',   glyph: '🌓' },
+      waxingGibbous:    { name: 'Waxing Gibbous',  glyph: '🌔' },
+      full:             { name: 'Full Moon',       glyph: '🌕' },
+      waningGibbous:    { name: 'Waning Gibbous',  glyph: '🌖' },
+      third:            { name: 'Third Quarter',   glyph: '🌗' },
+      waningCrescent:   { name: 'Waning Crescent', glyph: '🌘' }
+    };
+
+    const gameNotes = {
+      '2026-08-28': 'Blood Moon - Embrace your Shadow Side',
+      '2026-12-23': 'Super Moon - Danger, Will Robinson!'
+    };
+
+    const els = {
+      moonGlyph: document.getElementById('moonGlyph'),
+      phaseName: document.getElementById('phaseName'),
+      dateLabel: document.getElementById('dateLabel'),
+      dateTitle: document.getElementById('dateTitle'),
+      influenceKicker: document.getElementById('influenceKicker'),
+      trait: document.getElementById('trait'),
+      traitCopy: document.getElementById('traitCopy'),
+      specialNotice: document.getElementById('specialNotice'),
+      calendarTitle: document.getElementById('calendarTitle'),
+      calendarGrid: document.getElementById('calendarGrid'),
+      prevMonth: document.getElementById('prevMonth'),
+      nextMonth: document.getElementById('nextMonth'),
+      todayButton: document.getElementById('todayButton'),
+      copyLinkButton: document.getElementById('copyLinkButton'),
+      unsupportedNotice: document.getElementById('unsupportedNotice')
+    };
+
+    const vermontToday = getVermontToday();
+    let selectedDate = initialDate();
+    let calendarMonth = { year: Number(selectedDate.slice(0,4)), month: Number(selectedDate.slice(5,7)) - 1 };
+
+    function dayNumber(iso) {
+      const [y,m,d] = iso.split('-').map(Number);
+      return Date.UTC(y, m - 1, d) / 86400000;
+    }
+
+    function isoDate(y, m, d) {
+      return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    }
+
+    function getVermontToday() {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit'
+      }).formatToParts(new Date());
+      const get = type => parts.find(p => p.type === type).value;
+      return `${get('year')}-${get('month')}-${get('day')}`;
+    }
+
+    function initialDate() {
+      const query = new URLSearchParams(location.search).get('date');
+      if (/^\d{4}-\d{2}-\d{2}$/.test(query || '') && Number(query.slice(0,4)) === SUPPORTED_YEAR) return query;
+      if (Number(vermontToday.slice(0,4)) === SUPPORTED_YEAR) return vermontToday;
+      return '2026-09-08';
+    }
+
+    function friendlyDate(iso) {
+      const [y,m,d] = iso.split('-').map(Number);
+      return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'
+      }).format(new Date(Date.UTC(y,m-1,d)));
+    }
+
+    function monthTitle(year, month) {
+      return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+        .format(new Date(Date.UTC(year, month, 1)));
+    }
+
+    function exactEvent(iso) {
+      return phaseEvents.find(e => e.date === iso && e.date.startsWith(String(SUPPORTED_YEAR)));
+    }
+
+    function nearestPrincipal(iso) {
+      const target = dayNumber(iso);
+      return phaseEvents
+        .filter(e => e.date.startsWith(String(SUPPORTED_YEAR)))
+        .reduce((best, event) => Math.abs(event.day - target) < Math.abs(best.day - target) ? event : best);
+    }
+
+    function getVisualPhase(iso) {
+      const target = dayNumber(iso);
+      const exact = exactEvent(iso);
+      if (exact) return visualPhase[exact.type];
+
+      let previous = null;
+      for (const event of phaseEvents) {
+        if (event.day < target) previous = event;
+        else break;
+      }
+
+      if (!previous) return visualPhase.waningCrescent;
+      if (previous.type === 'new') return visualPhase.waxingCrescent;
+      if (previous.type === 'first') return visualPhase.waxingGibbous;
+      if (previous.type === 'full') return visualPhase.waningGibbous;
+      return visualPhase.waningCrescent;
+    }
+
+    function fullMoonRelation(iso) {
+      const target = dayNumber(iso);
+      const fulls = phaseEvents.filter(e => e.type === 'full' && e.date.startsWith(String(SUPPORTED_YEAR)));
+      for (const full of fulls) {
+        const delta = target - full.day;
+        if (delta === -1) return { type: 'before', full };
+        if (delta === 0) return { type: 'full', full };
+        if (delta === 1) return { type: 'after', full };
+      }
+      return null;
+    }
+
+    function renderHero() {
+      const visual = getVisualPhase(selectedDate);
+      const influence = nearestPrincipal(selectedDate);
+      const meta = phaseMeta[influence.type];
+
+      els.moonGlyph.textContent = visual.glyph;
+      els.phaseName.textContent = visual.name;
+      els.dateLabel.textContent = selectedDate === vermontToday ? 'Today in Vermont' : 'Selected RP Date';
+      els.dateTitle.textContent = friendlyDate(selectedDate);
+      els.influenceKicker.textContent = `${meta.principal} Influence`;
+      els.trait.textContent = meta.trait;
+      els.traitCopy.textContent = meta.copy;
+
+      const relation = fullMoonRelation(selectedDate);
+      let html = '';
+      if (relation?.type === 'before') {
+        html = `<div class="special"><strong>⚠ The Rage Builds</strong><p>During the day prior to the full moon, Moonmad become increasingly irritable and experience heightened anger responses.</p></div>`;
+      } else if (relation?.type === 'full') {
+        const note = gameNotes[selectedDate] ? `<br><em>${gameNotes[selectedDate]}</em>` : '';
+        html = `<div class="special danger"><strong>🌕 Full Moon Day</strong><p>Hybrid transformation begins at sundown and lasts until sunrise the following day. The character is driven toward instinct, rage, and the hunt.${note}</p></div>`;
+      } else if (relation?.type === 'after') {
+        html = `<div class="special recovery"><strong>Recovery Day</strong><p>A full day of recovery follows the previous night's rage and confusion.</p></div>`;
+      }
+      els.specialNotice.innerHTML = html;
+    }
+
+    function renderCalendar() {
+      const { year, month } = calendarMonth;
+      els.calendarTitle.textContent = monthTitle(year, month);
+      els.calendarGrid.innerHTML = '';
+
+      const firstWeekday = new Date(Date.UTC(year, month, 1)).getUTCDay();
+      const days = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+
+      for (let i = 0; i < firstWeekday; i++) {
+        const spacer = document.createElement('div');
+        spacer.setAttribute('aria-hidden','true');
+        els.calendarGrid.appendChild(spacer);
+      }
+
+      for (let day = 1; day <= days; day++) {
+        const iso = isoDate(year, month + 1, day);
+        const visual = getVisualPhase(iso);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'day';
+        if (iso === selectedDate) btn.classList.add('selected');
+        if (iso === vermontToday) btn.classList.add('today');
+        if (exactEvent(iso)?.type === 'full') btn.classList.add('full-day');
+        btn.setAttribute('aria-label', `${friendlyDate(iso)}, ${visual.name}`);
+        btn.innerHTML = `<span class="day-number">${day}</span><span class="day-moon" aria-hidden="true">${visual.glyph}</span><span class="day-mark" aria-hidden="true"></span>`;
+        btn.addEventListener('click', () => selectDate(iso, true));
+        els.calendarGrid.appendChild(btn);
+      }
+
+      els.prevMonth.disabled = month === 0;
+      els.nextMonth.disabled = month === 11;
+
+      const outsideNow = Number(vermontToday.slice(0,4)) !== SUPPORTED_YEAR;
+      els.todayButton.disabled = outsideNow;
+      els.todayButton.style.opacity = outsideNow ? '.4' : '1';
+      els.todayButton.style.cursor = outsideNow ? 'default' : 'pointer';
+
+      els.unsupportedNotice.innerHTML = outsideNow
+        ? `<div class="unsupported">This version has authoritative phase data for 2026 only, so the Today button is unavailable when Vermont is outside 2026. Adding another year is just a small data update.</div>`
+        : '';
+    }
+
+    function updateUrl() {
+      const url = new URL(location.href);
+      url.searchParams.set('date', selectedDate);
+      history.replaceState({}, '', url);
+    }
+
+    function selectDate(iso, update = true) {
+      selectedDate = iso;
+      calendarMonth = { year: Number(iso.slice(0,4)), month: Number(iso.slice(5,7)) - 1 };
+      if (update) updateUrl();
+      renderHero();
+      renderCalendar();
+    }
+
+    els.prevMonth.addEventListener('click', () => {
+      if (calendarMonth.month === 0) return;
+      calendarMonth.month -= 1;
+      renderCalendar();
+    });
+
+    els.nextMonth.addEventListener('click', () => {
+      if (calendarMonth.month === 11) return;
+      calendarMonth.month += 1;
+      renderCalendar();
+    });
+
+    els.todayButton.addEventListener('click', () => {
+      if (Number(vermontToday.slice(0,4)) === SUPPORTED_YEAR) selectDate(vermontToday, true);
+    });
+
+    els.copyLinkButton.addEventListener('click', async () => {
+      updateUrl();
+      try {
+        await navigator.clipboard.writeText(location.href);
+        const old = els.copyLinkButton.textContent;
+        els.copyLinkButton.textContent = 'Copied!';
+        setTimeout(() => els.copyLinkButton.textContent = old, 1400);
+      } catch {
+        prompt('Copy this link:', location.href);
+      }
+    });
+
+    renderHero();
+    renderCalendar();
+  </script>
+</body>
+</html>
