@@ -115,11 +115,56 @@
 
     .moon-wrap { text-align: center; }
 
+    .moon-icon {
+      position: relative;
+      display: inline-block;
+      width: var(--moon-size, 10rem);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      overflow: hidden;
+      vertical-align: middle;
+      background: #ffffff;
+      border: 1px solid rgba(255,255,255,.42);
+      box-shadow: 0 0 26px rgba(255,238,238,.08);
+      flex: 0 0 auto;
+    }
+
+    .moon-icon::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #110d10;
+    }
+
+    .phase-full { background: #ffffff; border-color: #ffffff; }
+    .phase-full::after { display: none; }
+
+    .phase-new {
+      background: transparent;
+      border: 2px solid #887777;
+      box-shadow: inset 0 0 12px rgba(0,0,0,.35), 0 0 12px rgba(183,129,121,.07);
+    }
+    .phase-new::after { display: none; }
+
+    .phase-first {
+      background: linear-gradient(to right, #110d10 0 50%, #ffffff 50% 100%);
+    }
+    .phase-first::after { display: none; }
+
+    .phase-third {
+      background: linear-gradient(to right, #ffffff 0 50%, #110d10 50% 100%);
+    }
+    .phase-third::after { display: none; }
+
+    .phase-waxingCrescent::after { transform: translateX(-18%); }
+    .phase-waningCrescent::after { transform: translateX(18%); }
+    .phase-waxingGibbous::after { transform: translateX(-68%); }
+    .phase-waningGibbous::after { transform: translateX(68%); }
+
     .moon-glyph {
-      font-family: "Segoe UI Symbol", "Apple Symbols", sans-serif;
-      font-size: clamp(8rem, 25vw, 12rem);
-      line-height: .95;
-      filter: drop-shadow(0 0 28px rgba(230, 211, 201, .10));
+      --moon-size: clamp(8rem, 25vw, 11rem);
+      line-height: 1;
       user-select: none;
     }
 
@@ -324,9 +369,9 @@
     }
 
     .day-moon {
-      font-family: "Segoe UI Symbol", "Apple Symbols", sans-serif;
-      font-size: 1.55rem;
-      line-height: 1;
+      --moon-size: 1.45rem;
+      box-shadow: none;
+      border-width: 1px;
     }
 
     .day-mark {
@@ -336,9 +381,21 @@
       background: transparent;
     }
 
+    .day.influence-day .day-mark {
+      background: var(--accent);
+      box-shadow: 0 0 6px rgba(183,129,121,.45);
+    }
+
     .day.full-day .day-mark {
       background: var(--danger);
       box-shadow: 0 0 8px rgba(189,63,63,.62);
+    }
+
+    .phase-inline {
+      --moon-size: 1.25rem;
+      margin-right: 8px;
+      box-shadow: none;
+      border-width: 1px;
     }
 
     .calendar-actions {
@@ -433,11 +490,11 @@
       .shell { width: min(100% - 18px, 980px); padding-top: 24px; }
       .hero { grid-template-columns: 1fr; }
       .moon-pane { min-height: auto; padding: 27px 20px 22px; border-right: 0; border-bottom: 1px solid var(--line); }
-      .moon-glyph { font-size: 8.5rem; }
+      .moon-glyph { --moon-size: 8.5rem; }
       .content-pane { padding: 25px 22px 28px; }
       .date-title { margin-bottom: 21px; }
       .day { min-height: 65px; border-radius: 10px; }
-      .day-moon { font-size: 1.32rem; }
+      .day-moon { --moon-size: 1.32rem; }
       .phase-list { grid-template-columns: 1fr; }
     }
 
@@ -446,7 +503,7 @@
       .weekdays, .calendar-grid { gap: 2px; }
       .day { min-height: 58px; padding: 5px 2px; }
       .day-number { font-size: .73rem; }
-      .day-moon { font-size: 1.18rem; }
+      .day-moon { --moon-size: 1.18rem; }
       .masthead { padding: 0 10px; }
     }
   </style>
@@ -462,7 +519,7 @@
     <section class="card hero" aria-live="polite">
       <div class="moon-pane">
         <div class="moon-wrap">
-          <div id="moonGlyph" class="moon-glyph" aria-hidden="true">🌘</div>
+          <span id="moonGlyph" class="moon-glyph moon-icon phase-waningCrescent" aria-hidden="true"></span>
           <div id="phaseName" class="phase-name">Waning Crescent</div>
         </div>
       </div>
@@ -471,11 +528,11 @@
         <p id="dateLabel" class="date-label">Today in Vermont</p>
         <h2 id="dateTitle" class="date-title">September 8, 2026</h2>
 
-        <p id="influenceKicker" class="influence-kicker">New Moon Influence</p>
-        <div id="trait" class="trait">Lethargic &amp; Withdrawn</div>
-        <p id="traitCopy" class="trait-copy">The pull of the new moon makes Moonmad lethargic and prone to withdrawing.</p>
+        <p id="influenceKicker" class="influence-kicker">No Active Influence</p>
+        <div id="trait" class="trait">Between Influences</div>
+        <p id="traitCopy" class="trait-copy">No phase-specific urge is active on this date, though ordinary Moonmad mood swings can still happen.</p>
 
-        <div class="luck"><span class="luck-dot"></span> Spend 1 Luck to resist the moon's urges.</div>
+        <div id="luckReminder" class="luck"><span class="luck-dot"></span> Spend 1 Luck to resist the moon's urges.</div>
         <div id="specialNotice"></div>
       </div>
     </section>
@@ -497,7 +554,7 @@
         <button id="todayButton" class="today-button" type="button">Today in Vermont</button>
         <button id="copyLinkButton" class="today-button" type="button">Copy link to this date</button>
       </div>
-      <p class="calendar-note">2026 principal moon phases are based on Timeanddate's Burlington, Vermont calendar. Moonmad influence uses the nearest principal phase, because the game rules say "the days surrounding" each phase without defining a numerical cutoff.</p>
+      <p class="calendar-note">2026 principal moon phases are based on Timeanddate's Burlington, Vermont calendar. Per Clock's ruling, each Moonmad influence is active for exactly three days: the day before, the day of, and the day after its principal phase.</p>
       <div id="unsupportedNotice"></div>
     </section>
 
@@ -505,14 +562,14 @@
       <details>
         <summary>Moonmad influence cheat sheet</summary>
         <div class="details-body">
-          <p>Moonmad are bound to the moon and prone to mood swings. The closest principal phase determines the influence shown above.</p>
+          <p>Moonmad are bound to the moon and prone to mood swings. Each phase-specific influence applies on the day before, the day of, and the day after its principal phase. Dates outside those three-day windows have no specific lunar urge.</p>
           <div class="phase-list">
-            <div class="phase-item"><strong>🌑 New Moon</strong>Lethargic and prone to withdrawing.</div>
-            <div class="phase-item"><strong>🌓 Waxing Half</strong>Mercurial and prone to playing tricks.</div>
-            <div class="phase-item"><strong>🌕 Full Moon</strong>Irritable and prone to fits of anger.</div>
-            <div class="phase-item"><strong>🌗 Waning Half</strong>Mysterious and prone to keeping secrets.</div>
+            <div class="phase-item"><strong><span class="phase-inline moon-icon phase-new" aria-hidden="true"></span>New Moon</strong>Lethargic and prone to withdrawing.</div>
+            <div class="phase-item"><strong><span class="phase-inline moon-icon phase-first" aria-hidden="true"></span>Waxing Half</strong>Mercurial and prone to playing tricks.</div>
+            <div class="phase-item"><strong><span class="phase-inline moon-icon phase-full" aria-hidden="true"></span>Full Moon</strong>Irritable and prone to fits of anger.</div>
+            <div class="phase-item"><strong><span class="phase-inline moon-icon phase-third" aria-hidden="true"></span>Waning Half</strong>Mysterious and prone to keeping secrets.</div>
           </div>
-          <p><strong>Resistance:</strong> Spend 1 Luck to resist the moon's urges.</p>
+          <p><strong>Resistance:</strong> During an active three-day influence window, spend 1 Luck to resist the moon's urges.</p>
         </div>
       </details>
 
@@ -538,7 +595,7 @@
       <details>
         <summary>About the calendar</summary>
         <div class="details-body">
-          <p>This version contains authoritative principal phase dates for <strong>2026</strong>, matching the game's stated Timeanddate reference for New England. Intermediate labels such as Waxing Crescent and Waning Gibbous are inferred from the principal phases.</p>
+          <p>This version contains authoritative principal phase dates for <strong>2026</strong>, matching the game's stated Timeanddate reference for New England. Intermediate labels such as Waxing Crescent and Waning Gibbous are inferred from the principal phases. Moonmad influence windows follow Clock's ruling: day before, day of, and day after each principal phase.</p>
           <p>The site uses the <strong>America/New_York</strong> timezone to decide what "today" means, so players outside Vermont still see the correct in-game local date.</p>
           <p><a href="https://www.timeanddate.com/moon/phases/usa/burlington-vt" target="_blank" rel="noopener noreferrer">Open the Burlington, Vermont moon phase calendar on Timeanddate</a>.</p>
         </div>
@@ -570,21 +627,37 @@
     ].map(([date, type]) => ({ date, type, day: dayNumber(date) }));
 
     const phaseMeta = {
-      new:   { principal: 'New Moon',      trait: 'Lethargic & Withdrawn', copy: 'The pull of the new moon makes Moonmad lethargic and prone to withdrawing.' },
-      first: { principal: 'Waxing Half',   trait: 'Mercurial & Trickster', copy: 'The waxing half moon makes Moonmad mercurial and prone to playing tricks.' },
-      full:  { principal: 'Full Moon',     trait: 'Irritable & Angry', copy: 'The full moon makes Moonmad irritable and prone to fits of anger.' },
-      third: { principal: 'Waning Half',   trait: 'Mysterious & Secretive', copy: 'The waning half moon makes Moonmad mysterious and prone to keeping secrets.' }
+      new: {
+        principal: 'New Moon',
+        trait: 'Lethargic & Withdrawn',
+        copy: 'RP prompt: conserve energy, shorten conversations, put off effort, seek solitude, or let social plans feel unusually easy to abandon.'
+      },
+      first: {
+        principal: 'Waxing Half',
+        trait: 'Mercurial & Trickster',
+        copy: 'RP prompt: change course quickly, tease, misdirect, test reactions, or follow an impulse simply because it suddenly seems more interesting.'
+      },
+      full: {
+        principal: 'Full Moon',
+        trait: 'Irritable & Angry',
+        copy: 'RP prompt: let small frustrations land harder, patience run thin, and reactions sharpen faster than the situation might normally deserve.'
+      },
+      third: {
+        principal: 'Waning Half',
+        trait: 'Mysterious & Secretive',
+        copy: 'RP prompt: hold details back, answer sideways, protect private thoughts, or lean into being difficult to read even when honesty would be easier.'
+      }
     };
 
     const visualPhase = {
-      new:              { name: 'New Moon',        glyph: '🌑' },
-      waxingCrescent:   { name: 'Waxing Crescent', glyph: '🌒' },
-      first:            { name: 'First Quarter',   glyph: '🌓' },
-      waxingGibbous:    { name: 'Waxing Gibbous',  glyph: '🌔' },
-      full:             { name: 'Full Moon',       glyph: '🌕' },
-      waningGibbous:    { name: 'Waning Gibbous',  glyph: '🌖' },
-      third:            { name: 'Third Quarter',   glyph: '🌗' },
-      waningCrescent:   { name: 'Waning Crescent', glyph: '🌘' }
+      new:              { key: 'new',              name: 'New Moon' },
+      waxingCrescent:   { key: 'waxingCrescent',   name: 'Waxing Crescent' },
+      first:            { key: 'first',            name: 'First Quarter' },
+      waxingGibbous:    { key: 'waxingGibbous',    name: 'Waxing Gibbous' },
+      full:             { key: 'full',             name: 'Full Moon' },
+      waningGibbous:    { key: 'waningGibbous',    name: 'Waning Gibbous' },
+      third:            { key: 'third',            name: 'Third Quarter' },
+      waningCrescent:   { key: 'waningCrescent',   name: 'Waning Crescent' }
     };
 
     const gameNotes = {
@@ -600,6 +673,7 @@
       influenceKicker: document.getElementById('influenceKicker'),
       trait: document.getElementById('trait'),
       traitCopy: document.getElementById('traitCopy'),
+      luckReminder: document.getElementById('luckReminder'),
       specialNotice: document.getElementById('specialNotice'),
       calendarTitle: document.getElementById('calendarTitle'),
       calendarGrid: document.getElementById('calendarGrid'),
@@ -654,11 +728,10 @@
       return phaseEvents.find(e => e.date === iso && e.date.startsWith(String(SUPPORTED_YEAR)));
     }
 
-    function nearestPrincipal(iso) {
+    function activeInfluence(iso) {
       const target = dayNumber(iso);
-      return phaseEvents
-        .filter(e => e.date.startsWith(String(SUPPORTED_YEAR)))
-        .reduce((best, event) => Math.abs(event.day - target) < Math.abs(best.day - target) ? event : best);
+      const events = phaseEvents.filter(e => e.date.startsWith(String(SUPPORTED_YEAR)));
+      return events.find(event => Math.abs(event.day - target) <= 1) || null;
     }
 
     function getVisualPhase(iso) {
@@ -693,16 +766,25 @@
 
     function renderHero() {
       const visual = getVisualPhase(selectedDate);
-      const influence = nearestPrincipal(selectedDate);
-      const meta = phaseMeta[influence.type];
+      const influence = activeInfluence(selectedDate);
 
-      els.moonGlyph.textContent = visual.glyph;
+      els.moonGlyph.className = `moon-glyph moon-icon phase-${visual.key}`;
       els.phaseName.textContent = visual.name;
       els.dateLabel.textContent = selectedDate === vermontToday ? 'Today in Vermont' : 'Selected RP Date';
       els.dateTitle.textContent = friendlyDate(selectedDate);
-      els.influenceKicker.textContent = `${meta.principal} Influence`;
-      els.trait.textContent = meta.trait;
-      els.traitCopy.textContent = meta.copy;
+
+      if (influence) {
+        const meta = phaseMeta[influence.type];
+        els.influenceKicker.textContent = `${meta.principal} Influence`;
+        els.trait.textContent = meta.trait;
+        els.traitCopy.textContent = meta.copy;
+        els.luckReminder.hidden = false;
+      } else {
+        els.influenceKicker.textContent = 'No Active Influence';
+        els.trait.textContent = 'Between Influences';
+        els.traitCopy.textContent = 'No phase-specific urge is active on this date. Ordinary Moonmad mood swings can still happen, but there is no lunar influence to resist with Luck.';
+        els.luckReminder.hidden = true;
+      }
 
       const relation = fullMoonRelation(selectedDate);
       let html = '';
@@ -710,9 +792,9 @@
         html = `<div class="special"><strong>⚠ The Rage Builds</strong><p>During the day prior to the full moon, Moonmad become increasingly irritable and experience heightened anger responses.</p></div>`;
       } else if (relation?.type === 'full') {
         const note = gameNotes[selectedDate] ? `<br><em>${gameNotes[selectedDate]}</em>` : '';
-        html = `<div class="special danger"><strong>🌕 Full Moon Day</strong><p>Hybrid transformation begins at sundown and lasts until sunrise the following day. The character is driven toward instinct, rage, and the hunt.${note}</p></div>`;
+        html = `<div class="special danger"><strong>Full Moon Day</strong><p>Hybrid transformation begins at sundown and lasts until sunrise the following day. The character is driven toward instinct, rage, and the hunt.${note}</p></div>`;
       } else if (relation?.type === 'after') {
-        html = `<div class="special recovery"><strong>Recovery Day</strong><p>A full day of recovery follows the previous night's rage and confusion.</p></div>`;
+        html = `<div class="special recovery"><strong>Recovery Day</strong><p>A full day of recovery follows the previous night's rage and confusion. The Full Moon's irritability and anger influence is still active today.</p></div>`;
       }
       els.specialNotice.innerHTML = html;
     }
@@ -739,9 +821,12 @@
         btn.className = 'day';
         if (iso === selectedDate) btn.classList.add('selected');
         if (iso === vermontToday) btn.classList.add('today');
+        if (activeInfluence(iso)) btn.classList.add('influence-day');
         if (exactEvent(iso)?.type === 'full') btn.classList.add('full-day');
-        btn.setAttribute('aria-label', `${friendlyDate(iso)}, ${visual.name}`);
-        btn.innerHTML = `<span class="day-number">${day}</span><span class="day-moon" aria-hidden="true">${visual.glyph}</span><span class="day-mark" aria-hidden="true"></span>`;
+        const influence = activeInfluence(iso);
+        const influenceLabel = influence ? `, ${phaseMeta[influence.type].principal} influence active` : ', no active Moonmad influence';
+        btn.setAttribute('aria-label', `${friendlyDate(iso)}, ${visual.name}${influenceLabel}`);
+        btn.innerHTML = `<span class="day-number">${day}</span><span class="day-moon moon-icon phase-${visual.key}" aria-hidden="true"></span><span class="day-mark" aria-hidden="true"></span>`;
         btn.addEventListener('click', () => selectDate(iso, true));
         els.calendarGrid.appendChild(btn);
       }
