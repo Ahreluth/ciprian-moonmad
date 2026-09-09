@@ -151,6 +151,32 @@
       box-shadow: 0 0 8px rgba(201,73,85,.42);
     }
 
+    /* Special moon events never change icon dimensions, so calendar spacing stays fixed. */
+    .moon-icon.super-moon {
+      box-shadow:
+        0 0 0 2px rgba(255, 193, 7, .78),
+        0 0 11px rgba(255, 193, 7, .42);
+    }
+
+    .moon-glyph.super-moon {
+      box-shadow:
+        0 0 0 3px rgba(255, 193, 7, .72),
+        0 0 28px rgba(255, 193, 7, .30);
+    }
+
+    .moon-icon.phase-new.super-moon {
+      border-color: #ffc107;
+    }
+
+    .special.super {
+      border-color: rgba(255, 193, 7, .42);
+      background: rgba(255, 193, 7, .065);
+    }
+
+    .special.super strong {
+      color: #ffda6a;
+    }
+
 
     .phase-new {
       background: transparent;
@@ -695,6 +721,7 @@
           <p>On Full Moon dates, the warning card also shows a Burlington, Vermont sunset and next-morning sunrise reference. These times are calculated locally in the page and require no API call.</p>
           <p>The site uses the <strong>America/New_York</strong> timezone to decide what "today" means, so players outside Vermont still see the correct in-game local date.</p>
           <p>This calendar was created with AI assistance. Its Moonmad rules and influence windows are based on Ciprian game material and staff clarification from Clock.</p>
+          <p>Special Moon labels follow Timeanddate's terminology within the supported 2026–2027 range. Blood Moons are shown in red; Super Moons keep their normal phase appearance with a gold halo. These astronomical labels do not add Moonmad mechanics unless Ciprian staff material says they do.</p>
           <p><a href="https://www.timeanddate.com/moon/phases/usa/burlington-vt" target="_blank" rel="noopener noreferrer">Open the Burlington, Vermont moon phase calendar on Timeanddate</a>.</p>
         </div>
       </details>
@@ -774,14 +801,29 @@
       waningCrescent:   { key: 'waningCrescent',   name: 'Waning Crescent' }
     };
 
-    const gameNotes = {
-      '2026-08-28': 'Blood Moon - Embrace your Shadow Side',
-      '2026-12-23': 'Super Moon - Danger, Will Robinson!'
+    const specialMoonEvents = {
+      // Timeanddate special lunar events for the calendar's supported range.
+      // Staff flavor text is preserved where Ciprian explicitly supplied it.
+      '2026-03-03': { type: 'blood', label: 'Blood Moon' },
+      '2026-05-16': { type: 'super', label: 'Super New Moon' },
+      '2026-06-14': { type: 'super', label: 'Super New Moon' },
+      '2026-08-28': { type: 'blood', label: 'Blood Moon', note: 'Embrace your Shadow Side' },
+      '2026-12-23': { type: 'super', label: 'Super Moon', note: 'Danger, Will Robinson!' },
+      '2027-01-22': { type: 'super', label: 'Super Moon' },
+      '2027-07-03': { type: 'super', label: 'Super New Moon' }
     };
 
-    const bloodMoonDates = new Set([
-      '2026-08-28'
-    ]);
+    const bloodMoonDates = new Set(
+      Object.entries(specialMoonEvents)
+        .filter(([, event]) => event.type === 'blood')
+        .map(([date]) => date)
+    );
+
+    const superMoonDates = new Set(
+      Object.entries(specialMoonEvents)
+        .filter(([, event]) => event.type === 'super')
+        .map(([date]) => date)
+    );
 
     const els = {
       moonGlyph: document.getElementById('moonGlyph'),
@@ -956,11 +998,18 @@
       };
     }
 
+    function moonSpecialClasses(iso) {
+      const classes = [];
+      if (bloodMoonDates.has(iso)) classes.push('blood-moon');
+      if (superMoonDates.has(iso)) classes.push('super-moon');
+      return classes.length ? ` ${classes.join(' ')}` : '';
+    }
+
     function renderHero() {
       const visual = getVisualPhase(selectedDate);
       const influence = activeInfluence(selectedDate);
 
-      els.moonGlyph.className = `moon-glyph moon-icon phase-${visual.key}${bloodMoonDates.has(selectedDate) ? ' blood-moon' : ''}`;
+      els.moonGlyph.className = `moon-glyph moon-icon phase-${visual.key}${moonSpecialClasses(selectedDate)}`;
       els.phaseName.textContent = visual.name;
       els.dateLabel.textContent = selectedDate === vermontToday ? 'Today in Vermont' : 'Selected RP Date';
       els.dateTitle.textContent = friendlyDate(selectedDate);
@@ -977,16 +1026,26 @@
       }
 
       const relation = fullMoonRelation(selectedDate);
+      const specialMoon = specialMoonEvents[selectedDate];
       let html = '';
+
       if (relation?.type === 'before') {
         html = `<div class="special"><strong>⚠ The Rage Builds</strong><p>During the day prior to the full moon, Moonmad become increasingly irritable and experience heightened anger responses.</p></div>`;
       } else if (relation?.type === 'full') {
-        const note = gameNotes[selectedDate] ? `<br><em>${gameNotes[selectedDate]}</em>` : '';
+        const eventLine = specialMoon
+          ? `<br><em>${specialMoon.label}${specialMoon.note ? ` - ${specialMoon.note}` : ''}</em>`
+          : '';
         const sun = fullMoonSunTimes(selectedDate);
-        html = `<div class="special danger"><strong>Full Moon Day</strong><p>Hybrid form begins at sundown and lasts until sunrise the following day. Instinct, rage, and the hunt take over.${note}</p><div class="sun-times"><div class="sun-time"><span>Ciprian sunset</span><b>${sun.sunset}</b></div><div class="sun-time"><span>Ciprian sunrise</span><b>${sun.nextSunrise}</b></div></div></div>`;
+        html = `<div class="special danger"><strong>Full Moon Day</strong><p>Hybrid form begins at sundown and lasts until sunrise the following day. Instinct, rage, and the hunt take over.${eventLine}</p><div class="sun-times"><div class="sun-time"><span>Ciprian sunset</span><b>${sun.sunset}</b></div><div class="sun-time"><span>Ciprian sunrise</span><b>${sun.nextSunrise}</b></div></div></div>`;
       } else if (relation?.type === 'after') {
         html = `<div class="special recovery"><strong>Recovery Day</strong><p>A full day of recovery follows the previous night's rage and confusion. The Full Moon's irritability and anger influence is still active today.</p></div>`;
+      } else if (specialMoon?.type === 'super') {
+        const eventLabel = specialMoon.note
+          ? `${specialMoon.label} - ${specialMoon.note}`
+          : specialMoon.label;
+        html = `<div class="special super"><strong>${eventLabel}</strong><p>This principal phase occurs unusually close to lunar perigee. Moonmad mechanics are unchanged unless game material says otherwise.</p></div>`;
       }
+
       els.specialNotice.innerHTML = html;
     }
 
@@ -1022,8 +1081,8 @@
         const influence = activeInfluence(iso);
         const influenceLabel = influence ? `, ${phaseMeta[influence.type].principal} influence active` : ', no active Moonmad influence';
         btn.setAttribute('aria-label', `${friendlyDate(iso)}, ${visual.name}${influenceLabel}`);
-        const bloodClass = bloodMoonDates.has(iso) ? ' blood-moon' : '';
-        btn.innerHTML = `<span class="day-number">${day}</span><span class="day-moon moon-icon phase-${visual.key}${bloodClass}" aria-hidden="true"></span><span class="day-mark" aria-hidden="true"></span>`;
+        const specialClasses = moonSpecialClasses(iso);
+        btn.innerHTML = `<span class="day-number">${day}</span><span class="day-moon moon-icon phase-${visual.key}${specialClasses}" aria-hidden="true"></span><span class="day-mark" aria-hidden="true"></span>`;
         btn.addEventListener('click', () => selectDate(iso, true));
         els.calendarGrid.appendChild(btn);
       }
