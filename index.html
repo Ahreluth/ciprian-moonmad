@@ -147,15 +147,38 @@
     }
     .phase-new::after { display: none; }
 
-    .phase-first {
-      background: linear-gradient(to right, #110d10 0 50%, #ffffff 50% 100%);
-    }
-    .phase-first::after { display: none; }
-
+    /* Quarter moons use exact half-disc layers rather than a gradient.
+       A neutral outline prevents the illuminated half from wrapping visually
+       around the dark edge at small icon sizes. */
+    .phase-first,
     .phase-third {
-      background: linear-gradient(to right, #ffffff 0 50%, #110d10 50% 100%);
+      background: #110d10;
+      border: 1px solid #4a5f6e;
+      box-shadow: 0 0 26px rgba(255,238,238,.05);
     }
-    .phase-third::after { display: none; }
+
+    .phase-first::before,
+    .phase-third::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      background: #ffffff;
+    }
+
+    .phase-first::before {
+      right: 0;
+    }
+
+    .phase-third::before {
+      left: 0;
+    }
+
+    .phase-first::after,
+    .phase-third::after {
+      display: none;
+    }
 
     .phase-waxingCrescent::after { transform: translateX(-18%); }
     .phase-waningCrescent::after { transform: translateX(18%); }
@@ -178,6 +201,7 @@
     }
 
     .content-pane {
+      min-height: 500px;
       padding: clamp(26px, 5vw, 44px);
       display: flex;
       flex-direction: column;
@@ -223,31 +247,16 @@
       font-size: 1rem;
     }
 
-    .luck {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      align-self: flex-start;
-      margin-top: 20px;
-      padding: 9px 12px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      color: var(--silver);
-      background: rgba(238,232,226,.025);
-      font-size: .84rem;
-    }
 
-    .luck-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 12px rgba(176,102,116,.55);
+    .special-slot {
+      margin-top: 18px;
     }
 
     .special {
-      margin-top: 22px;
-      padding: 16px 17px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       border: 1px solid rgba(201, 100, 21, .46);
       border-radius: 4px;
       background: rgba(201, 100, 21, .09);
@@ -275,6 +284,50 @@
     .special.danger strong { color: #BD3F3F; }
     .special.recovery strong { color: #578c63; }
     .special p { margin: 0; color: #BAABAB; }
+
+    .sun-times {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .sun-time {
+      padding: 7px 9px;
+      border: 1px solid rgba(183,129,121,.28);
+      background: rgba(26,18,21,.38);
+    }
+
+    .sun-time span {
+      display: block;
+      color: var(--muted);
+      font-size: .68rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .sun-time b {
+      display: block;
+      margin-top: 1px;
+      color: var(--silver);
+      font-family: "Crimson Pro", Garamond, Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .sun-note {
+      margin-top: 7px !important;
+      color: var(--muted) !important;
+      font-size: .72rem;
+    }
+
+    .resistance-note {
+      margin: 14px 0 0;
+      padding: 10px 12px;
+      border-left: 3px solid var(--accent);
+      background: rgba(59,21,20,.35);
+      color: #BAABAB;
+    }
 
     .calendar-card {
       margin-top: 20px;
@@ -491,11 +544,15 @@
       .hero { grid-template-columns: 1fr; }
       .moon-pane { min-height: auto; padding: 27px 20px 22px; border-right: 0; border-bottom: 1px solid var(--line); }
       .moon-glyph { --moon-size: 8.5rem; }
-      .content-pane { padding: 25px 22px 28px; }
+      .content-pane { min-height: 500px; padding: 25px 22px 28px; }
       .date-title { margin-bottom: 21px; }
       .day { min-height: 65px; border-radius: 10px; }
       .day-moon { --moon-size: 1.32rem; }
       .phase-list { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 650px) {
+      .sun-times { grid-template-columns: 1fr 1fr; }
     }
 
     @media (max-width: 430px) {
@@ -532,8 +589,7 @@
         <div id="trait" class="trait">Between Influences</div>
         <p id="traitCopy" class="trait-copy">No phase-specific urge is active on this date, though ordinary Moonmad mood swings can still happen.</p>
 
-        <div id="luckReminder" class="luck"><span class="luck-dot"></span> Spend 1 Luck to resist the moon's urges.</div>
-        <div id="specialNotice"></div>
+        <div id="specialNotice" class="special-slot" aria-live="polite"></div>
       </div>
     </section>
 
@@ -554,7 +610,7 @@
         <button id="todayButton" class="today-button" type="button">Today in Vermont</button>
         <button id="copyLinkButton" class="today-button" type="button">Copy link to this date</button>
       </div>
-      <p class="calendar-note">2026 principal moon phases are based on Timeanddate's Burlington, Vermont calendar. Per Clock's ruling, each Moonmad influence is active for exactly three days: the day before, the day of, and the day after its principal phase.</p>
+      <p class="calendar-note">2026–2027 principal moon phases use Timeanddate's US Eastern-time dates, matching Vermont. Per Clock's ruling, each Moonmad influence is active for exactly three days: the day before, the day of, and the day after its principal phase.</p>
       <div id="unsupportedNotice"></div>
     </section>
 
@@ -569,7 +625,7 @@
             <div class="phase-item"><strong><span class="phase-inline moon-icon phase-full" aria-hidden="true"></span>Full Moon</strong>Irritable and prone to fits of anger.</div>
             <div class="phase-item"><strong><span class="phase-inline moon-icon phase-third" aria-hidden="true"></span>Waning Half</strong>Mysterious and prone to keeping secrets.</div>
           </div>
-          <p><strong>Resistance:</strong> During an active three-day influence window, spend 1 Luck to resist the moon's urges.</p>
+          <p class="resistance-note"><strong>Resistance:</strong> During an active three-day influence window, spend 1 Luck to resist the moon's urges.</p>
         </div>
       </details>
 
@@ -595,7 +651,8 @@
       <details>
         <summary>About the calendar</summary>
         <div class="details-body">
-          <p>This version contains authoritative principal phase dates for <strong>2026</strong>, matching the game's stated Timeanddate reference for New England. Intermediate labels such as Waxing Crescent and Waning Gibbous are inferred from the principal phases. Moonmad influence windows follow Clock's ruling: day before, day of, and day after each principal phase.</p>
+          <p>This version contains principal phase dates for <strong>2026 and 2027</strong>, using Timeanddate's US Eastern-time dates so the calendar matches Vermont. Intermediate labels such as Waxing Crescent and Waning Gibbous are inferred from the principal phases. Moonmad influence windows follow Clock's ruling: day before, day of, and day after each principal phase.</p>
+          <p>On Full Moon dates, the warning card also shows a Burlington, Vermont sunset and next-morning sunrise reference. These times are calculated locally in the page and require no API call.</p>
           <p>The site uses the <strong>America/New_York</strong> timezone to decide what "today" means, so players outside Vermont still see the correct in-game local date.</p>
           <p><a href="https://www.timeanddate.com/moon/phases/usa/burlington-vt" target="_blank" rel="noopener noreferrer">Open the Burlington, Vermont moon phase calendar on Timeanddate</a>.</p>
         </div>
@@ -606,10 +663,13 @@
   </main>
 
   <script>
-    const SUPPORTED_YEAR = 2026;
+    const SUPPORTED_YEARS = [2026, 2027];
+    const MIN_DATE = '2026-01-01';
+    const MAX_DATE = '2027-12-31';
 
-    // Principal phase dates for Burlington, Vermont, from Timeanddate's 2026 calendar.
-    // December 27, 2025 is included only so January 1-2 can be classified correctly.
+    // Principal phase dates. 2026 uses Timeanddate's Burlington, Vermont calendar;
+    // 2027 dates use Timeanddate's US Eastern-time calendar, which shares Vermont's local date.
+    // December 27, 2025 is included only so the first days of January 2026 render correctly.
     const phaseEvents = [
       ['2025-12-27', 'first'],
       ['2026-01-03', 'full'], ['2026-01-10', 'third'], ['2026-01-18', 'new'], ['2026-01-25', 'first'],
@@ -623,7 +683,20 @@
       ['2026-09-04', 'third'], ['2026-09-10', 'new'], ['2026-09-18', 'first'], ['2026-09-26', 'full'],
       ['2026-10-03', 'third'], ['2026-10-10', 'new'], ['2026-10-18', 'first'], ['2026-10-26', 'full'],
       ['2026-11-01', 'third'], ['2026-11-09', 'new'], ['2026-11-17', 'first'], ['2026-11-24', 'full'],
-      ['2026-12-01', 'third'], ['2026-12-08', 'new'], ['2026-12-17', 'first'], ['2026-12-23', 'full'], ['2026-12-30', 'third']
+      ['2026-12-01', 'third'], ['2026-12-08', 'new'], ['2026-12-17', 'first'], ['2026-12-23', 'full'], ['2026-12-30', 'third'],
+
+      ['2027-01-07', 'new'], ['2027-01-15', 'first'], ['2027-01-22', 'full'], ['2027-01-29', 'third'],
+      ['2027-02-06', 'new'], ['2027-02-14', 'first'], ['2027-02-20', 'full'], ['2027-02-28', 'third'],
+      ['2027-03-08', 'new'], ['2027-03-15', 'first'], ['2027-03-22', 'full'], ['2027-03-29', 'third'],
+      ['2027-04-06', 'new'], ['2027-04-13', 'first'], ['2027-04-20', 'full'], ['2027-04-28', 'third'],
+      ['2027-05-06', 'new'], ['2027-05-13', 'first'], ['2027-05-20', 'full'], ['2027-05-28', 'third'],
+      ['2027-06-05', 'new'], ['2027-06-11', 'first'], ['2027-06-19', 'full'], ['2027-06-27', 'third'],
+      ['2027-07-03', 'new'], ['2027-07-10', 'first'], ['2027-07-18', 'full'], ['2027-07-26', 'third'],
+      ['2027-08-02', 'new'], ['2027-08-09', 'first'], ['2027-08-17', 'full'], ['2027-08-24', 'third'], ['2027-08-31', 'new'],
+      ['2027-09-07', 'first'], ['2027-09-15', 'full'], ['2027-09-23', 'third'], ['2027-09-29', 'new'],
+      ['2027-10-07', 'first'], ['2027-10-15', 'full'], ['2027-10-22', 'third'], ['2027-10-29', 'new'],
+      ['2027-11-06', 'first'], ['2027-11-13', 'full'], ['2027-11-20', 'third'], ['2027-11-27', 'new'],
+      ['2027-12-06', 'first'], ['2027-12-13', 'full'], ['2027-12-20', 'third'], ['2027-12-27', 'new']
     ].map(([date, type]) => ({ date, type, day: dayNumber(date) }));
 
     const phaseMeta = {
@@ -673,7 +746,6 @@
       influenceKicker: document.getElementById('influenceKicker'),
       trait: document.getElementById('trait'),
       traitCopy: document.getElementById('traitCopy'),
-      luckReminder: document.getElementById('luckReminder'),
       specialNotice: document.getElementById('specialNotice'),
       calendarTitle: document.getElementById('calendarTitle'),
       calendarGrid: document.getElementById('calendarGrid'),
@@ -697,6 +769,20 @@
       return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     }
 
+    function isSupportedYear(year) {
+      return SUPPORTED_YEARS.includes(Number(year));
+    }
+
+    function isSupportedDate(iso) {
+      return /^\d{4}-\d{2}-\d{2}$/.test(iso || '') && iso >= MIN_DATE && iso <= MAX_DATE;
+    }
+
+    function addDays(iso, amount) {
+      const [y,m,d] = iso.split('-').map(Number);
+      const dt = new Date(Date.UTC(y, m - 1, d + amount));
+      return isoDate(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate());
+    }
+
     function getVermontToday() {
       const parts = new Intl.DateTimeFormat('en-US', {
         timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit'
@@ -707,8 +793,8 @@
 
     function initialDate() {
       const query = new URLSearchParams(location.search).get('date');
-      if (/^\d{4}-\d{2}-\d{2}$/.test(query || '') && Number(query.slice(0,4)) === SUPPORTED_YEAR) return query;
-      if (Number(vermontToday.slice(0,4)) === SUPPORTED_YEAR) return vermontToday;
+      if (isSupportedDate(query)) return query;
+      if (isSupportedDate(vermontToday)) return vermontToday;
       return '2026-09-08';
     }
 
@@ -725,12 +811,12 @@
     }
 
     function exactEvent(iso) {
-      return phaseEvents.find(e => e.date === iso && e.date.startsWith(String(SUPPORTED_YEAR)));
+      return phaseEvents.find(e => e.date === iso && isSupportedDate(e.date));
     }
 
     function activeInfluence(iso) {
       const target = dayNumber(iso);
-      const events = phaseEvents.filter(e => e.date.startsWith(String(SUPPORTED_YEAR)));
+      const events = phaseEvents.filter(e => isSupportedDate(e.date));
       return events.find(event => Math.abs(event.day - target) <= 1) || null;
     }
 
@@ -754,7 +840,7 @@
 
     function fullMoonRelation(iso) {
       const target = dayNumber(iso);
-      const fulls = phaseEvents.filter(e => e.type === 'full' && e.date.startsWith(String(SUPPORTED_YEAR)));
+      const fulls = phaseEvents.filter(e => e.type === 'full' && isSupportedDate(e.date));
       for (const full of fulls) {
         const delta = target - full.day;
         if (delta === -1) return { type: 'before', full };
@@ -762,6 +848,67 @@
         if (delta === 1) return { type: 'after', full };
       }
       return null;
+    }
+
+    function getNewYorkOffsetHours(iso) {
+      const [y,m,d] = iso.split('-').map(Number);
+      const probe = new Date(Date.UTC(y, m - 1, d, 12));
+      const zone = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York', timeZoneName: 'shortOffset'
+      }).formatToParts(probe).find(p => p.type === 'timeZoneName')?.value || 'GMT-5';
+      const match = zone.match(/GMT([+-]\d+)(?::(\d+))?/);
+      if (!match) return -5;
+      const sign = Number(match[1]) < 0 ? -1 : 1;
+      return Number(match[1]) + sign * (Number(match[2] || 0) / 60);
+    }
+
+    function solarEventLocalMinutes(iso, isSunrise) {
+      // Compact sunrise equation using Burlington, Vermont coordinates.
+      // Accurate to the minute for the RP reference and requires no network/API call.
+      const [year, month, day] = iso.split('-').map(Number);
+      const date = new Date(Date.UTC(year, month - 1, day));
+      const start = new Date(Date.UTC(year, 0, 0));
+      const N = Math.floor((date - start) / 86400000);
+      const lat = 44.4759;
+      const lon = -73.2121;
+      const lngHour = lon / 15;
+      const t = N + ((isSunrise ? 6 : 18) - lngHour) / 24;
+      const M = 0.9856 * t - 3.289;
+      const sin = x => Math.sin(x * Math.PI / 180);
+      const cos = x => Math.cos(x * Math.PI / 180);
+      const atan = x => Math.atan(x) * 180 / Math.PI;
+      const acos = x => Math.acos(x) * 180 / Math.PI;
+      const norm = x => ((x % 360) + 360) % 360;
+      let L = norm(M + 1.916 * sin(M) + 0.020 * sin(2 * M) + 282.634);
+      let RA = norm(atan(0.91764 * Math.tan(L * Math.PI / 180)));
+      RA += Math.floor(L / 90) * 90 - Math.floor(RA / 90) * 90;
+      RA /= 15;
+      const sinDec = 0.39782 * sin(L);
+      const cosDec = Math.cos(Math.asin(sinDec));
+      const cosH = (cos(90.833) - sinDec * sin(lat)) / (cosDec * cos(lat));
+      if (cosH > 1 || cosH < -1) return null;
+      let H = isSunrise ? 360 - acos(cosH) : acos(cosH);
+      H /= 15;
+      const T = H + RA - 0.06571 * t - 6.622;
+      const utcHour = ((T - lngHour) % 24 + 24) % 24;
+      const localHour = ((utcHour + getNewYorkOffsetHours(iso)) % 24 + 24) % 24;
+      return Math.round(localHour * 60) % 1440;
+    }
+
+    function formatMinutes(minutes) {
+      if (minutes == null) return '—';
+      let h = Math.floor(minutes / 60) % 24;
+      const m = minutes % 60;
+      const suffix = h >= 12 ? 'PM' : 'AM';
+      const displayH = h % 12 || 12;
+      return `${displayH}:${String(m).padStart(2,'0')} ${suffix}`;
+    }
+
+    function fullMoonSunTimes(iso) {
+      return {
+        sunset: formatMinutes(solarEventLocalMinutes(iso, false)),
+        nextSunrise: formatMinutes(solarEventLocalMinutes(addDays(iso, 1), true))
+      };
     }
 
     function renderHero() {
@@ -778,12 +925,10 @@
         els.influenceKicker.textContent = `${meta.principal} Influence`;
         els.trait.textContent = meta.trait;
         els.traitCopy.textContent = meta.copy;
-        els.luckReminder.hidden = false;
       } else {
         els.influenceKicker.textContent = 'No Active Influence';
         els.trait.textContent = 'Between Influences';
-        els.traitCopy.textContent = 'No phase-specific urge is active on this date. Ordinary Moonmad mood swings can still happen, but there is no lunar influence to resist with Luck.';
-        els.luckReminder.hidden = true;
+        els.traitCopy.textContent = 'No phase-specific lunar urge is active on this date. Ordinary Moonmad mood swings can still happen, but the moon is not pushing one of the four specific behaviors.';
       }
 
       const relation = fullMoonRelation(selectedDate);
@@ -792,7 +937,8 @@
         html = `<div class="special"><strong>⚠ The Rage Builds</strong><p>During the day prior to the full moon, Moonmad become increasingly irritable and experience heightened anger responses.</p></div>`;
       } else if (relation?.type === 'full') {
         const note = gameNotes[selectedDate] ? `<br><em>${gameNotes[selectedDate]}</em>` : '';
-        html = `<div class="special danger"><strong>Full Moon Day</strong><p>Hybrid transformation begins at sundown and lasts until sunrise the following day. The character is driven toward instinct, rage, and the hunt.${note}</p></div>`;
+        const sun = fullMoonSunTimes(selectedDate);
+        html = `<div class="special danger"><strong>Full Moon Day</strong><p>Hybrid form begins at sundown and lasts until sunrise the following day. Instinct, rage, and the hunt take over.${note}</p><div class="sun-times"><div class="sun-time"><span>Approx. Burlington sunset</span><b>${sun.sunset}</b></div><div class="sun-time"><span>Approx. next sunrise</span><b>${sun.nextSunrise}</b></div></div><p class="sun-note">Burlington reference; times can vary a few minutes elsewhere in Vermont.</p></div>`;
       } else if (relation?.type === 'after') {
         html = `<div class="special recovery"><strong>Recovery Day</strong><p>A full day of recovery follows the previous night's rage and confusion. The Full Moon's irritability and anger influence is still active today.</p></div>`;
       }
@@ -831,16 +977,16 @@
         els.calendarGrid.appendChild(btn);
       }
 
-      els.prevMonth.disabled = month === 0;
-      els.nextMonth.disabled = month === 11;
+      els.prevMonth.disabled = year === 2026 && month === 0;
+      els.nextMonth.disabled = year === 2027 && month === 11;
 
-      const outsideNow = Number(vermontToday.slice(0,4)) !== SUPPORTED_YEAR;
+      const outsideNow = !isSupportedDate(vermontToday);
       els.todayButton.disabled = outsideNow;
       els.todayButton.style.opacity = outsideNow ? '.4' : '1';
       els.todayButton.style.cursor = outsideNow ? 'default' : 'pointer';
 
       els.unsupportedNotice.innerHTML = outsideNow
-        ? `<div class="unsupported">This version has authoritative phase data for 2026 only, so the Today button is unavailable when Vermont is outside 2026. Adding another year is just a small data update.</div>`
+        ? `<div class="unsupported">This version contains phase data for 2026–2027, so the Today button is unavailable when Vermont is outside that range.</div>`
         : '';
     }
 
@@ -859,19 +1005,29 @@
     }
 
     els.prevMonth.addEventListener('click', () => {
-      if (calendarMonth.month === 0) return;
-      calendarMonth.month -= 1;
+      if (calendarMonth.year === 2026 && calendarMonth.month === 0) return;
+      if (calendarMonth.month === 0) {
+        calendarMonth.year -= 1;
+        calendarMonth.month = 11;
+      } else {
+        calendarMonth.month -= 1;
+      }
       renderCalendar();
     });
 
     els.nextMonth.addEventListener('click', () => {
-      if (calendarMonth.month === 11) return;
-      calendarMonth.month += 1;
+      if (calendarMonth.year === 2027 && calendarMonth.month === 11) return;
+      if (calendarMonth.month === 11) {
+        calendarMonth.year += 1;
+        calendarMonth.month = 0;
+      } else {
+        calendarMonth.month += 1;
+      }
       renderCalendar();
     });
 
     els.todayButton.addEventListener('click', () => {
-      if (Number(vermontToday.slice(0,4)) === SUPPORTED_YEAR) selectDate(vermontToday, true);
+      if (isSupportedDate(vermontToday)) selectDate(vermontToday, true);
     });
 
     els.copyLinkButton.addEventListener('click', async () => {
