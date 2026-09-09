@@ -47,46 +47,44 @@
     a { color: var(--accent); }
 
     .shell {
-      width: min(980px, calc(100% - 28px));
+      width: min(940px, calc(100% - 24px));
       margin: 0 auto;
-      padding: 42px 0 56px;
+      padding: 18px 0 36px;
     }
 
     .masthead {
       text-align: center;
-      margin-bottom: 22px;
+      margin-bottom: 12px;
     }
 
     .eyebrow {
-      margin: 0 0 8px;
-      font-size: .75rem;
-      letter-spacing: .22em;
-      text-transform: uppercase;
+      margin: 0 0 2px;
+      font-family: "Crimson Pro", Garamond, Georgia, serif;
+      font-size: 1rem;
+      letter-spacing: .055em;
       color: var(--accent);
     }
 
     h1 {
       display: inline-block;
       margin: 0;
-      padding: .08em .34em .04em;
+      padding: 0;
       font-family: "Crimson Pro", Garamond, Georgia, serif;
-      font-size: clamp(2.5rem, 8vw, 4.9rem);
+      font-size: clamp(2.35rem, 6vw, 4rem);
       font-weight: 500;
-      letter-spacing: .015em;
+      letter-spacing: .035em;
       text-transform: uppercase;
-      color: var(--ink);
-      background: #3B1514;
-      border-bottom: 1px solid;
-      border-image: linear-gradient(to right, #ababab, #3B1514);
-      border-image-slice: 1;
+      color: var(--silver);
+      background: transparent;
+      border: 0;
       text-shadow: 0 1px 0 rgba(0,0,0,.35);
     }
 
     .subtitle {
       max-width: 660px;
-      margin: 10px auto 0;
+      margin: 2px auto 0;
       color: var(--muted);
-      font-size: .97rem;
+      font-size: .82rem;
     }
 
     .card {
@@ -103,10 +101,11 @@
     }
 
     .moon-pane {
-      min-height: 390px;
+      height: 370px;
+      min-height: 370px;
       display: grid;
       place-items: center;
-      padding: 32px;
+      padding: 24px;
       border-right: 1px solid var(--line);
       background:
         radial-gradient(circle at center, rgba(183, 129, 121, .10), transparent 13rem),
@@ -194,30 +193,32 @@
     .phase-name {
       margin-top: 20px;
       color: var(--silver);
-      font-size: .8rem;
+      font-size: .75rem;
       font-weight: 700;
       letter-spacing: .15em;
       text-transform: uppercase;
     }
 
     .content-pane {
-      min-height: 500px;
-      padding: clamp(26px, 5vw, 44px);
+      height: 370px;
+      min-height: 370px;
+      padding: 22px 28px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
+      overflow: hidden;
     }
 
     .date-label {
       margin: 0 0 5px;
       color: var(--muted);
-      font-size: .78rem;
+      font-size: .67rem;
       text-transform: uppercase;
       letter-spacing: .12em;
     }
 
     .date-title {
-      margin: 0 0 28px;
+      margin: 0 0 13px;
       font-family: "Crimson Pro", Garamond, Georgia, serif;
       font-size: clamp(1.45rem, 4vw, 2rem);
       font-weight: 500;
@@ -233,9 +234,9 @@
     }
 
     .trait {
-      margin: 5px 0 8px;
+      margin: 3px 0 5px;
       font-family: "Crimson Pro", Garamond, Georgia, serif;
-      font-size: clamp(2rem, 6vw, 3.55rem);
+      font-size: clamp(1.9rem, 5vw, 3.1rem);
       line-height: 1.04;
       font-weight: 500;
     }
@@ -244,16 +245,19 @@
       margin: 0;
       max-width: 560px;
       color: #BAABAB;
-      font-size: 1rem;
+      font-size: .9rem;
     }
 
 
     .special-slot {
-      margin-top: 18px;
+      height: 126px;
+      min-height: 126px;
+      margin-top: 10px;
     }
 
     .special {
-      padding: 14px 16px;
+      height: 100%;
+      padding: 9px 12px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -274,7 +278,7 @@
 
     .special strong {
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
       color: #C96415;
       font-size: .8rem;
       letter-spacing: .08em;
@@ -283,17 +287,17 @@
 
     .special.danger strong { color: #BD3F3F; }
     .special.recovery strong { color: #578c63; }
-    .special p { margin: 0; color: #BAABAB; }
+    .special p { margin: 0; color: #BAABAB; font-size: .82rem; line-height: 1.35; }
 
     .sun-times {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 10px;
+      gap: 6px;
+      margin-top: 6px;
     }
 
     .sun-time {
-      padding: 7px 9px;
+      padding: 4px 7px;
       border: 1px solid rgba(183,129,121,.28);
       background: rgba(26,18,21,.38);
     }
@@ -301,7 +305,7 @@
     .sun-time span {
       display: block;
       color: var(--muted);
-      font-size: .68rem;
+      font-size: .61rem;
       letter-spacing: .08em;
       text-transform: uppercase;
     }
@@ -311,14 +315,14 @@
       margin-top: 1px;
       color: var(--silver);
       font-family: "Crimson Pro", Garamond, Georgia, serif;
-      font-size: 1.1rem;
+      font-size: .98rem;
       font-weight: 600;
     }
 
     .sun-note {
-      margin-top: 7px !important;
+      margin-top: 4px !important;
       color: var(--muted) !important;
-      font-size: .72rem;
+      font-size: .63rem;
     }
 
     .resistance-note {
@@ -330,22 +334,22 @@
     }
 
     .calendar-card {
-      margin-top: 20px;
-      padding: clamp(18px, 4vw, 30px);
+      margin-top: 12px;
+      padding: 12px 16px 13px;
     }
 
     .calendar-head {
       display: grid;
-      grid-template-columns: 44px 1fr 44px;
+      grid-template-columns: 36px 1fr 36px;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 18px;
+      gap: 8px;
+      margin-bottom: 7px;
     }
 
     .calendar-title {
       text-align: center;
       font-family: "Crimson Pro", Garamond, Georgia, serif;
-      font-size: clamp(1.25rem, 4vw, 1.65rem);
+      font-size: clamp(1.12rem, 3vw, 1.42rem);
     }
 
     .icon-button,
@@ -358,8 +362,8 @@
     }
 
     .icon-button {
-      width: 44px;
-      height: 40px;
+      width: 36px;
+      height: 32px;
       border-radius: 4px;
       font-size: 1.15rem;
     }
@@ -380,21 +384,21 @@
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 6px;
+      gap: 3px;
     }
 
     .weekday {
-      padding: 3px 0 8px;
+      padding: 1px 0 4px;
       text-align: center;
       color: var(--muted);
-      font-size: .71rem;
+      font-size: .66rem;
       font-weight: 700;
       text-transform: uppercase;
     }
 
     .day {
-      min-height: 76px;
-      padding: 7px 5px 6px;
+      min-height: 45px;
+      padding: 3px 3px 3px;
       border: 1px solid transparent;
       border-radius: 4px;
       background: transparent;
@@ -417,19 +421,19 @@
     .day.full-day .day-number { color: #FFEEEE; }
 
     .day-number {
-      font-size: .8rem;
+      font-size: .71rem;
       font-weight: 700;
     }
 
     .day-moon {
-      --moon-size: 1.45rem;
+      --moon-size: 1.02rem;
       box-shadow: none;
       border-width: 1px;
     }
 
     .day-mark {
-      width: 5px;
-      height: 5px;
+      width: 4px;
+      height: 4px;
       border-radius: 50%;
       background: transparent;
     }
@@ -452,7 +456,7 @@
     }
 
     .calendar-actions {
-      margin-top: 18px;
+      margin-top: 8px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -460,14 +464,14 @@
     }
 
     .today-button {
-      padding: 9px 14px;
+      padding: 5px 10px;
       border-radius: 999px;
       font: inherit;
-      font-size: .84rem;
+      font-size: .76rem;
     }
 
     .calendar-note {
-      margin: 14px auto 0;
+      margin: 7px auto 0;
       max-width: 680px;
       text-align: center;
       color: var(--muted);
@@ -494,7 +498,7 @@
     }
 
     summary::-webkit-details-marker { display: none; }
-    summary::after { content: "+"; float: right; color: var(--muted); font-size: 1.1rem; }
+    summary::after { content: "+"; float: right; color: var(--muted); font-size: .98rem; }
     details[open] summary::after { content: "−"; }
 
     .details-body {
@@ -540,14 +544,16 @@
     }
 
     @media (max-width: 720px) {
-      .shell { width: min(100% - 18px, 980px); padding-top: 24px; }
+      .shell { width: min(100% - 14px, 940px); padding-top: 14px; }
       .hero { grid-template-columns: 1fr; }
-      .moon-pane { min-height: auto; padding: 27px 20px 22px; border-right: 0; border-bottom: 1px solid var(--line); }
-      .moon-glyph { --moon-size: 8.5rem; }
-      .content-pane { min-height: 500px; padding: 25px 22px 28px; }
-      .date-title { margin-bottom: 21px; }
-      .day { min-height: 65px; border-radius: 10px; }
-      .day-moon { --moon-size: 1.32rem; }
+      .moon-pane { height: 205px; min-height: 205px; padding: 18px 20px 14px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .moon-glyph { --moon-size: 7.2rem; }
+      .phase-name { margin-top: 10px; }
+      .content-pane { height: 365px; min-height: 365px; padding: 20px 20px 22px; }
+      .date-title { margin-bottom: 12px; }
+      .special-slot { height: 132px; min-height: 132px; }
+      .day { min-height: 43px; border-radius: 4px; }
+      .day-moon { --moon-size: .98rem; }
       .phase-list { grid-template-columns: 1fr; }
     }
 
@@ -556,19 +562,21 @@
     }
 
     @media (max-width: 430px) {
-      .calendar-card { padding: 16px 10px 19px; }
+      .calendar-card { padding: 10px 7px 12px; }
       .weekdays, .calendar-grid { gap: 2px; }
-      .day { min-height: 58px; padding: 5px 2px; }
-      .day-number { font-size: .73rem; }
-      .day-moon { --moon-size: 1.18rem; }
-      .masthead { padding: 0 10px; }
+      .day { min-height: 41px; padding: 3px 1px; }
+      .day-number { font-size: .68rem; }
+      .day-moon { --moon-size: .9rem; }
+      .masthead { padding: 0 8px; }
+      .eyebrow { font-size: .9rem; }
+      .subtitle { font-size: .76rem; }
     }
   </style>
 </head>
 <body>
   <main class="shell">
     <header class="masthead">
-      <p class="eyebrow">Ciprian RP Reference</p>
+      <p class="eyebrow">Ahreluth's Handy Dandy Moonmad Calendy</p>
       <h1>Moonmad</h1>
       <p class="subtitle">Vermont moon phases and the Curse influence they place on Moonmad characters.</p>
     </header>
@@ -610,7 +618,7 @@
         <button id="todayButton" class="today-button" type="button">Today in Vermont</button>
         <button id="copyLinkButton" class="today-button" type="button">Copy link to this date</button>
       </div>
-      <p class="calendar-note">2026–2027 principal moon phases use Timeanddate's US Eastern-time dates, matching Vermont. Per Clock's ruling, each Moonmad influence is active for exactly three days: the day before, the day of, and the day after its principal phase.</p>
+      <p class="calendar-note">Influence windows last three days: the day before, phase day, and the day after.</p>
       <div id="unsupportedNotice"></div>
     </section>
 
@@ -654,6 +662,7 @@
           <p>This version contains principal phase dates for <strong>2026 and 2027</strong>, using Timeanddate's US Eastern-time dates so the calendar matches Vermont. Intermediate labels such as Waxing Crescent and Waning Gibbous are inferred from the principal phases. Moonmad influence windows follow Clock's ruling: day before, day of, and day after each principal phase.</p>
           <p>On Full Moon dates, the warning card also shows a Burlington, Vermont sunset and next-morning sunrise reference. These times are calculated locally in the page and require no API call.</p>
           <p>The site uses the <strong>America/New_York</strong> timezone to decide what "today" means, so players outside Vermont still see the correct in-game local date.</p>
+          <p>This calendar was created with AI assistance. Its Moonmad rules and influence windows are based on Ciprian game material and staff clarification from Clock.</p>
           <p><a href="https://www.timeanddate.com/moon/phases/usa/burlington-vt" target="_blank" rel="noopener noreferrer">Open the Burlington, Vermont moon phase calendar on Timeanddate</a>.</p>
         </div>
       </details>
@@ -938,7 +947,7 @@
       } else if (relation?.type === 'full') {
         const note = gameNotes[selectedDate] ? `<br><em>${gameNotes[selectedDate]}</em>` : '';
         const sun = fullMoonSunTimes(selectedDate);
-        html = `<div class="special danger"><strong>Full Moon Day</strong><p>Hybrid form begins at sundown and lasts until sunrise the following day. Instinct, rage, and the hunt take over.${note}</p><div class="sun-times"><div class="sun-time"><span>Approx. Burlington sunset</span><b>${sun.sunset}</b></div><div class="sun-time"><span>Approx. next sunrise</span><b>${sun.nextSunrise}</b></div></div><p class="sun-note">Burlington reference; times can vary a few minutes elsewhere in Vermont.</p></div>`;
+        html = `<div class="special danger"><strong>Full Moon Day</strong><p>Hybrid form begins at sundown and lasts until sunrise the following day. Instinct, rage, and the hunt take over.${note}</p><div class="sun-times"><div class="sun-time"><span>Burlington sunset</span><b>${sun.sunset}</b></div><div class="sun-time"><span>Next sunrise</span><b>${sun.nextSunrise}</b></div></div></div>`;
       } else if (relation?.type === 'after') {
         html = `<div class="special recovery"><strong>Recovery Day</strong><p>A full day of recovery follows the previous night's rage and confusion. The Full Moon's irritability and anger influence is still active today.</p></div>`;
       }
