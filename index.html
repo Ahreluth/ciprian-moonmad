@@ -929,7 +929,7 @@
           <p>This calendar was created with AI assistance. Its Moonmad rules and influence windows are based on Ciprian game material and staff clarification from Clock.</p>
           <p>Special Moon labels follow Timeanddate's terminology within the supported 2026–2027 range. Blood Moons are shown in red; Super Moons keep their normal phase appearance with a gold halo. These astronomical labels do not add Moonmad mechanics unless Ciprian staff material says they do.</p>
           <p>For RP dates within seven days before or after Vermont today, the moon panel also shows Ciprian weather at <strong>8 AM, 1 PM, and 8 PM</strong>. Weather uses Burlington, Vermont as Ciprian's real-world reference and is loaded on demand from <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>. The browser caches the small weather response for 30 minutes, and dates outside that 15-day window make no weather request.</p>
-          <p>Weather artwork uses the static filled <a href="https://meteocons.com/" target="_blank" rel="noopener noreferrer">Meteocons</a> set by Bas Milius and is used under the MIT License. These SVGs contain no animation. Day and night variants are selected from Open-Meteo's daylight flag.</p>
+          <p>Weather artwork uses the filled <a href="https://meteocons.com/" target="_blank" rel="noopener noreferrer">Meteocons</a> set by Bas Milius and is used under the MIT License. These icons are animated. Day and night variants are selected from Open-Meteo's daylight flag.</p>
           <p><a href="https://www.timeanddate.com/moon/phases/usa/burlington-vt" target="_blank" rel="noopener noreferrer">Open the Burlington, Vermont moon phase calendar on Timeanddate</a>.</p>
         </div>
       </details>
@@ -1227,9 +1227,9 @@
     const WEATHER_CACHE_KEY = 'ciprian-moonmad-weather-v2';
     const WEATHER_CACHE_TTL = 30 * 60 * 1000;
 
-    // Meteocons by Bas Milius, static filled SVG set (MIT).
-    // The svg-static format contains no animation.
-    const METEOCONS_BASE = 'https://cdn.meteocons.com/1.1.0/svg-static/fill';
+    // Meteocons by Bas Milius, animated filled SVG set (MIT).
+    // This is the known-good source that rendered correctly in earlier versions.
+    const METEOCONS_BASE = 'https://cdn.jsdelivr.net/gh/basmilius/weather-icons@2.0.0/production/fill/all';
     const WEATHER_TIMES = [
       { hour: 8, label: '8 AM' },
       { hour: 13, label: '1 PM' },
@@ -1415,7 +1415,7 @@
             ${slots.map(slot => `
               <div class="weather-time">
                 <span class="weather-hour">${slot.label}</span>
-                <img class="weather-icon" src="${slot.icon}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+                <img class="weather-icon" src="${slot.icon}" alt="" aria-hidden="true" loading="lazy" decoding="async" onerror="this.style.display='none'">
                 <span class="weather-condition">${slot.condition}</span>
                 <span class="weather-temp"><span class="weather-temp-f">${slot.f}°F</span><span class="weather-temp-c">(${slot.c}°C)</span></span>
               </div>
