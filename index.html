@@ -687,6 +687,153 @@
       }
     }
 
+  
+    .weather-panel {
+      width: min(100%, 330px);
+      min-height: 96px;
+      margin: 18px auto 0;
+      padding-top: 12px;
+      border-top: 1px solid rgba(74, 95, 110, .72);
+      text-align: left;
+    }
+
+    .weather-panel[hidden] {
+      display: none !important;
+    }
+
+    .weather-title {
+      margin: 0 0 8px;
+      font-family: "Crimson Pro", Garamond, Georgia, serif;
+      color: #B78179;
+      font-size: .84rem;
+      font-weight: 600;
+      letter-spacing: .09em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .weather-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .weather-time {
+      min-width: 0;
+      padding: 7px 5px 8px;
+      border: 1px solid rgba(74, 95, 110, .62);
+      border-radius: 4px;
+      background: rgba(59, 21, 20, .38);
+      text-align: center;
+    }
+
+    .weather-hour {
+      display: block;
+      margin-bottom: 2px;
+      color: #887777;
+      font-size: .59rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .weather-icon {
+      display: block;
+      width: 40px;
+      height: 40px;
+      margin: 1px auto 2px;
+      object-fit: contain;
+    }
+
+    .weather-condition {
+      display: block;
+      min-height: 2.35em;
+      color: #BAABAB;
+      font-size: .69rem;
+      line-height: 1.18;
+      overflow-wrap: anywhere;
+    }
+
+    .weather-temp {
+      display: block;
+      margin-top: 4px;
+      font-family: "Crimson Pro", Garamond, Georgia, serif;
+      line-height: 1.05;
+      text-align: center;
+    }
+
+    .weather-temp-f {
+      display: block;
+      color: #FFEEEE;
+      font-size: .96rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .weather-temp-c {
+      display: block;
+      margin-top: 2px;
+      color: #BAABAB;
+      font-size: .72rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .weather-loading,
+    .weather-unavailable {
+      min-height: 65px;
+      display: grid;
+      place-items: center;
+      color: #887777;
+      font-size: .72rem;
+      text-align: center;
+    }
+
+    @media (max-width: 720px) {
+      .moon-pane.has-weather {
+        height: auto;
+        min-height: 0;
+        padding-bottom: 24px;
+      }
+
+      .weather-panel {
+        width: min(100%, 340px);
+        margin-top: 15px;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .weather-panel {
+        width: 100%;
+      }
+
+      .weather-grid {
+        gap: 4px;
+      }
+
+      .weather-time {
+        padding-left: 3px;
+        padding-right: 3px;
+      }
+
+      .weather-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .weather-condition {
+        font-size: .64rem;
+      }
+
+      .weather-temp-f {
+        font-size: .88rem;
+      }
+
+      .weather-temp-c {
+        font-size: .68rem;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -702,6 +849,7 @@
         <div class="moon-wrap">
           <span id="moonGlyph" class="moon-glyph moon-icon phase-waningCrescent" aria-hidden="true"></span>
           <div id="phaseName" class="phase-name">Waning Crescent</div>
+          <div id="weatherPanel" class="weather-panel" hidden aria-live="polite"></div>
         </div>
       </div>
 
@@ -740,7 +888,7 @@
 
     <section class="card reference">
       <details>
-        <summary>Moonmad influence</summary>
+        <summary>Moonmad influence cheat sheet</summary>
         <div class="details-body">
           <p>Moonmad are bound to the moon and prone to mood swings. Each phase-specific influence applies on the day before, the day of, and the day after its principal phase. Dates outside those three-day windows have no specific lunar urge.</p>
           <div class="phase-list">
@@ -780,6 +928,8 @@
           <p>The site uses the <strong>America/New_York</strong> timezone to decide what "today" means, so players outside Vermont still see the correct in-game local date.</p>
           <p>This calendar was created with AI assistance. Its Moonmad rules and influence windows are based on Ciprian game material and staff clarification from Clock.</p>
           <p>Special Moon labels follow Timeanddate's terminology within the supported 2026–2027 range. Blood Moons are shown in red; Super Moons keep their normal phase appearance with a gold halo. These astronomical labels do not add Moonmad mechanics unless Ciprian staff material says they do.</p>
+          <p>For RP dates within seven days before or after Vermont today, the moon panel also shows Ciprian weather at <strong>8 AM, 1 PM, and 8 PM</strong>. Weather uses Burlington, Vermont as Ciprian's real-world reference and is loaded on demand from <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>. The browser caches the small weather response for 30 minutes, and dates outside that 15-day window make no weather request.</p>
+          <p>Weather artwork uses the static filled <a href="https://meteocons.com/" target="_blank" rel="noopener noreferrer">Meteocons</a> set by Bas Milius and is used under the MIT License. These SVGs contain no animation. Day and night variants are selected from Open-Meteo's daylight flag.</p>
           <p><a href="https://www.timeanddate.com/moon/phases/usa/burlington-vt" target="_blank" rel="noopener noreferrer">Open the Burlington, Vermont moon phase calendar on Timeanddate</a>.</p>
         </div>
       </details>
@@ -884,8 +1034,10 @@
     );
 
     const els = {
+      moonPane: document.querySelector('.moon-pane'),
       moonGlyph: document.getElementById('moonGlyph'),
       phaseName: document.getElementById('phaseName'),
+      weatherPanel: document.getElementById('weatherPanel'),
       dateLabel: document.getElementById('dateLabel'),
       dateTitle: document.getElementById('dateTitle'),
       influenceKicker: document.getElementById('influenceKicker'),
@@ -1063,9 +1215,227 @@
       return classes.length ? ` ${classes.join(' ')}` : '';
     }
 
+
+    // ----------------------------------------------------------------
+    // Ciprian weather
+    // ----------------------------------------------------------------
+    // Burlington, Vermont is used as Ciprian's real-world weather proxy.
+    // Data is requested only for dates within ±7 Vermont days of today.
+    // One request returns the full 15-day window; browsers cache it locally.
+    const WEATHER_LAT = 44.4759;
+    const WEATHER_LON = -73.2121;
+    const WEATHER_CACHE_KEY = 'ciprian-moonmad-weather-v2';
+    const WEATHER_CACHE_TTL = 30 * 60 * 1000;
+
+    // Meteocons by Bas Milius, static filled SVG set (MIT).
+    // The svg-static format contains no animation.
+    const METEOCONS_BASE = 'https://cdn.meteocons.com/1.1.0/svg-static/fill';
+    const WEATHER_TIMES = [
+      { hour: 8, label: '8 AM' },
+      { hour: 13, label: '1 PM' },
+      { hour: 20, label: '8 PM' }
+    ];
+
+    let weatherMemoryCache = null;
+    let weatherRequestPromise = null;
+
+    function weatherEligible(iso) {
+      return Math.abs(dayNumber(iso) - dayNumber(vermontToday)) <= 7;
+    }
+
+    function weatherCodeLabel(code) {
+      if (code === 0) return 'Clear';
+      if (code === 1) return 'Mostly Clear';
+      if (code === 2) return 'Partly Cloudy';
+      if (code === 3) return 'Overcast';
+      if (code === 45 || code === 48) return 'Fog';
+      if ([51, 53, 55].includes(code)) return 'Drizzle';
+      if ([56, 57].includes(code)) return 'Freezing Drizzle';
+      if ([61, 63, 65].includes(code)) return 'Rain';
+      if ([66, 67].includes(code)) return 'Freezing Rain';
+      if ([71, 73, 75].includes(code)) return 'Snow';
+      if (code === 77) return 'Snow Grains';
+      if ([80, 81, 82].includes(code)) return 'Rain Showers';
+      if ([85, 86].includes(code)) return 'Snow Showers';
+      if (code === 95) return 'Thunderstorms';
+      if ([96, 99].includes(code)) return 'T-storm + Hail';
+      return 'Mixed Weather';
+    }
+
+    function weatherIconName(code, isDay) {
+      const daytime = Number(isDay) === 1;
+
+      if (code === 0) return daytime ? 'clear-day' : 'clear-night';
+      if (code === 1 || code === 2) return daytime ? 'partly-cloudy-day' : 'partly-cloudy-night';
+      if (code === 3) return 'overcast';
+      if (code === 45 || code === 48) return daytime ? 'fog-day' : 'fog-night';
+      if ([51, 53, 55].includes(code)) return 'drizzle';
+      if ([56, 57, 66, 67].includes(code)) return 'sleet';
+      if ([61, 63, 65, 80, 81, 82].includes(code)) return 'rain';
+      if ([71, 73, 75, 77, 85, 86].includes(code)) return 'snow';
+      if (code === 95) return daytime ? 'thunderstorms-day' : 'thunderstorms-night';
+      if ([96, 99].includes(code)) return 'hail';
+      return 'not-available';
+    }
+
+    function celsiusFromFahrenheit(f) {
+      return Math.round((f - 32) * 5 / 9);
+    }
+
+    function loadWeatherCache() {
+      if (weatherMemoryCache) return weatherMemoryCache;
+      try {
+        const raw = localStorage.getItem(WEATHER_CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || parsed.vermontToday !== vermontToday || !parsed.data) return null;
+        weatherMemoryCache = parsed;
+        return parsed;
+      } catch {
+        return null;
+      }
+    }
+
+    function saveWeatherCache(data) {
+      const entry = {
+        savedAt: Date.now(),
+        vermontToday,
+        data
+      };
+      weatherMemoryCache = entry;
+      try {
+        localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify(entry));
+      } catch {
+        // Local storage can be unavailable in privacy modes. Memory caching is enough.
+      }
+      return entry;
+    }
+
+    async function getWeatherData() {
+      const cached = loadWeatherCache();
+      if (cached && Date.now() - cached.savedAt < WEATHER_CACHE_TTL) {
+        return cached.data;
+      }
+
+      if (weatherRequestPromise) return weatherRequestPromise;
+
+      const params = new URLSearchParams({
+        latitude: WEATHER_LAT,
+        longitude: WEATHER_LON,
+        hourly: 'temperature_2m,weather_code,is_day',
+        temperature_unit: 'fahrenheit',
+        timezone: 'America/New_York',
+        past_days: '7',
+        forecast_days: '8'
+      });
+
+      weatherRequestPromise = fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`)
+        .then(response => {
+          if (!response.ok) throw new Error(`Weather request failed: ${response.status}`);
+          return response.json();
+        })
+        .then(data => saveWeatherCache(data).data)
+        .catch(error => {
+          // A stale cached response is better than no weather at all if the API is briefly down.
+          if (cached?.data) return cached.data;
+          throw error;
+        })
+        .finally(() => {
+          weatherRequestPromise = null;
+        });
+
+      return weatherRequestPromise;
+    }
+
+    function weatherForDate(data, iso) {
+      if (!data?.hourly?.time || !data?.hourly?.temperature_2m || !data?.hourly?.weather_code || !data?.hourly?.is_day) {
+        return null;
+      }
+
+      return WEATHER_TIMES.map(slot => {
+        const stamp = `${iso}T${String(slot.hour).padStart(2, '0')}:00`;
+        const index = data.hourly.time.indexOf(stamp);
+        if (index < 0) return null;
+
+        const fahrenheit = data.hourly.temperature_2m[index];
+        const code = data.hourly.weather_code[index];
+        const isDay = data.hourly.is_day[index];
+
+        if (fahrenheit == null || code == null || isDay == null) return null;
+
+        const iconName = weatherIconName(Number(code), Number(isDay));
+
+        return {
+          label: slot.label,
+          condition: weatherCodeLabel(Number(code)),
+          icon: `${METEOCONS_BASE}/${iconName}.svg`,
+          f: Math.round(Number(fahrenheit)),
+          c: celsiusFromFahrenheit(Number(fahrenheit))
+        };
+      });
+    }
+
+    function hideWeather() {
+      els.weatherPanel.hidden = true;
+      els.weatherPanel.innerHTML = '';
+      els.moonPane.classList.remove('has-weather');
+    }
+
+    async function renderWeather(iso) {
+      if (!weatherEligible(iso)) {
+        hideWeather();
+        return;
+      }
+
+      els.weatherPanel.hidden = false;
+      els.moonPane.classList.add('has-weather');
+      els.weatherPanel.innerHTML = `
+        <div class="weather-title">Ciprian Weather</div>
+        <div class="weather-loading">Loading weather…</div>
+      `;
+
+      try {
+        const data = await getWeatherData();
+
+        // Ignore a completed request if the player clicked a different date meanwhile.
+        if (selectedDate !== iso) return;
+
+        const slots = weatherForDate(data, iso);
+        if (!slots || slots.some(slot => !slot)) {
+          els.weatherPanel.innerHTML = `
+            <div class="weather-title">Ciprian Weather</div>
+            <div class="weather-unavailable">Weather unavailable for this date.</div>
+          `;
+          return;
+        }
+
+        els.weatherPanel.innerHTML = `
+          <div class="weather-title">Ciprian Weather</div>
+          <div class="weather-grid">
+            ${slots.map(slot => `
+              <div class="weather-time">
+                <span class="weather-hour">${slot.label}</span>
+                <img class="weather-icon" src="${slot.icon}" alt="" aria-hidden="true" loading="lazy" decoding="async">
+                <span class="weather-condition">${slot.condition}</span>
+                <span class="weather-temp"><span class="weather-temp-f">${slot.f}°F</span><span class="weather-temp-c">(${slot.c}°C)</span></span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } catch {
+        if (selectedDate !== iso) return;
+        els.weatherPanel.innerHTML = `
+          <div class="weather-title">Ciprian Weather</div>
+          <div class="weather-unavailable">Weather is temporarily unavailable.</div>
+        `;
+      }
+    }
+
     function renderHero() {
       const visual = getVisualPhase(selectedDate);
       const influence = activeInfluence(selectedDate);
+
+      renderWeather(selectedDate);
 
       els.moonGlyph.className = `moon-glyph moon-icon phase-${visual.key}${moonSpecialClasses(selectedDate)}`;
       els.phaseName.textContent = visual.name;
